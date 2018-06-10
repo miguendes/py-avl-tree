@@ -2,31 +2,37 @@ import unittest
 
 
 class AvlNode(object):
-    def __init__(self, elem, left=None, right=None):
+    def __init__(self, elem=None, left=None, right=None):
         self.elem = elem
         self.left = left
         self.right = right
 
+    def insert(self, elem):
+        if self.elem is None:
+            self.elem = elem
+        elif elem > self.elem:
+            if self.right is None:
+                self.right = AvlNode(elem)
+            else:
+                self.right.insert(elem)
+        elif elem <= self.elem:
+            if self.left is None:
+                self.left = AvlNode(elem)
+            else:
+                self.left.insert(elem)
+        else:
+            raise RuntimeError
+
 
 class AvlTree(object):
     def __init__(self):
-        self.root = None
+        self.root = AvlNode()
 
     def empty(self):
-        return self.root is None
+        return self.root.elem is None
 
     def insert(self, elem):
-        self.root = self._insert(self.root, elem)
-
-    def _insert(self, root, elem):
-        if root is None:
-            return AvlNode(elem)
-        else:
-            if elem > root.elem:
-                root.right = self._insert(root.right, elem)
-            else:
-                root.left = self._insert(root.left, elem)
-        return root
+        self.root.insert(elem)
 
 
 class AvlTreeTest(unittest.TestCase):
@@ -71,4 +77,3 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.right.elem, 14)
         self.assertEqual(root.right.right.elem, 17)
         self.assertEqual(root.left.right.elem, 7)
-
