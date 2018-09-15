@@ -32,6 +32,8 @@ class _AvlNode:
     def _check_imbalance(self):
         if self.balance_factor == -2:
             self.rotate_left()
+        elif self.balance_factor == 2:
+            self.rotate_right()
 
     def rotate_left(self):
         old_elem = self.elem
@@ -44,8 +46,16 @@ class _AvlNode:
     def _fix_height(self):
         left_height = self.left.height if self.left is not None else 0
         right_height = self.right.height if self.right is not None else 0
-        self.balance_factor = left_height - right_height
         self.height = 1 + max(left_height, right_height)
+        self.balance_factor = left_height - right_height
+
+    def rotate_right(self):
+        old_elem = self.elem
+        self.elem = self.left.elem
+        self.insert(old_elem)
+        self.left = self.left.left
+
+        self._fix_height()
 
 
 class AvlTree:
