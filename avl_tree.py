@@ -22,11 +22,7 @@ class _AvlNode:
         else:
             raise RuntimeError
 
-        left_height = self.left.height if self.left is not None else 0
-        right_height = self.right.height if self.right is not None else 0
-        self.height = 1 + max(left_height, right_height)
-        self.balance_factor = left_height - right_height
-
+        self._fix_height()
         self._check_imbalance()
 
     def _check_imbalance(self):
