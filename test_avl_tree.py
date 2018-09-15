@@ -132,3 +132,19 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.right.balance_factor, 0)
         self.assertEqual(root.height, 2)
 
+    def test_left_right_rotation(self):
+        tree = AvlTree()
+        tree.insert(3)
+        root = tree.root
+        self.assertEqual(root.balance_factor, 0)
+        self.assertEqual(root.height, 1)
+
+        tree.insert(1)
+        self.assertEqual(root.balance_factor, 1)
+        self.assertEqual(root.height, 2)
+
+        tree.insert(2)
+        self.assertEqual(root.balance_factor, 0)
+        self.assertEqual(root.left.balance_factor, 0)
+        self.assertEqual(root.right.balance_factor, 0)
+        self.assertEqual(root.height, 2)

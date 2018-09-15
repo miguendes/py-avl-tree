@@ -26,7 +26,9 @@ class _AvlNode:
         self._check_imbalance()
 
     def _check_imbalance(self):
-        if self.balance_factor == -2:
+        if self.balance_factor == 2 and self.left.balance_factor == -1:
+            self.rotate_left_right()
+        elif self.balance_factor == -2:
             self.rotate_left()
         elif self.balance_factor == 2:
             self.rotate_right()
@@ -52,6 +54,10 @@ class _AvlNode:
         self.left = self.left.left
 
         self._fix_height()
+
+    def rotate_left_right(self):
+        self.left.rotate_left()
+        self.rotate_right()
 
 
 class AvlTree:
