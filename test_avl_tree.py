@@ -1,22 +1,22 @@
 import unittest
 
-from avl_tree import AvlTree
+from avl_tree import AVLTree
 
 
 class AvlTreeTest(unittest.TestCase):
     def test_empty_tree(self):
-        tree = AvlTree()
+        tree = AVLTree()
         self.assertTrue(tree.empty())
 
     def test_insert_on_empty_tree(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(9)
 
         self.assertEqual(tree.root.key, 9)
         self.assertFalse(tree.empty())
 
     def test_smaller_key_on_the_left_of_root(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(9)
         tree.insert(4)
 
@@ -24,7 +24,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(tree.root.left.key, 4)
 
     def test_greater_key_on_the_right_of_root(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(9)
         tree.insert(14)
 
@@ -32,7 +32,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(tree.root.right.key, 14)
 
     def test_recursive_insertion(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(9)
         tree.insert(4)
         tree.insert(14)
@@ -47,7 +47,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.left.right.key, 7)
 
     def test_height(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(9)
         root = tree.root
         self.assertEqual(root.height, 1)
@@ -73,7 +73,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.left.right.height, 1)
 
     def test_balance_factor(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(9)
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
@@ -99,7 +99,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.left.right.balance_factor, 0)
 
     def test_single_left_rotation(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(1)
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
@@ -118,7 +118,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.height, 2)
 
     def test_single_right_rotation(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(3)
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
@@ -137,7 +137,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.height, 2)
 
     def test_left_right_rotation(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(3)
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
@@ -156,7 +156,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.height, 2)
 
     def test_right_left_rotation(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(1)
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
@@ -182,7 +182,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.right.key, 3)
 
     def test_advanced_right_rotation(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(8)
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
@@ -234,7 +234,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.right.left.key, 7)
 
     def test_advanced_left_rotation(self):
-        tree = AvlTree()
+        tree = AVLTree()
         tree.insert(20)
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
@@ -286,7 +286,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.left.right.key, 23)
 
     def test_traversal(self):
-        tree = AvlTree()
+        tree = AVLTree()
 
         tree.insert(20)
         tree.insert(10)

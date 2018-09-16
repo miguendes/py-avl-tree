@@ -77,7 +77,7 @@ class _AvlNode:
         return left_height - right_height
 
 
-class AvlTree:
+class AVLTree:
     def __init__(self):
         self.root = _AvlNode()
 
