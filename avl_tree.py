@@ -1,24 +1,24 @@
 class _AvlNode:
-    def __init__(self, elem=None):
-        self.elem = elem
+    def __init__(self, key=None):
+        self.key = key
         self.left = None
         self.right = None
         self.height = 1
 
-    def insert(self, elem):
-        if self.elem is None:
-            self.elem = elem
+    def insert(self, key):
+        if self.key is None:
+            self.key = key
             return self
-        elif elem > self.elem:
+        elif key > self.key:
             if self.right is None:
-                self.right = _AvlNode(elem)
+                self.right = _AvlNode(key)
             else:
-                self.right = self.right.insert(elem)
-        elif elem <= self.elem:
+                self.right = self.right.insert(key)
+        elif key <= self.key:
             if self.left is None:
-                self.left = _AvlNode(elem)
+                self.left = _AvlNode(key)
             else:
-                self.left = self.left.insert(elem)
+                self.left = self.left.insert(key)
         else:
             raise RuntimeError
 
@@ -82,7 +82,7 @@ class AvlTree:
         self.root = _AvlNode()
 
     def empty(self):
-        return self.root.elem is None
+        return self.root.key is None
 
     def insert(self, elem):
         self.root = self.root.insert(elem)
