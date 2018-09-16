@@ -298,3 +298,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertListEqual(list(tree.traverse('preorder')), [25, 20, 10, 23, 29, 30])
         self.assertListEqual(list(tree.traverse()), [10, 20, 23, 25, 29, 30])
         self.assertListEqual(list(tree.traverse('postorder')), [10, 23, 20, 30, 29, 25])
+
+
+if __name__ == '__main__':
+    unittest.main()
