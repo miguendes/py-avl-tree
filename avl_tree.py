@@ -88,30 +88,28 @@ class AVLTree:
         self.root = self.root.insert(elem)
 
     def traverse(self, order='inorder'):
-        lst = []
         if order == 'preorder':
-            self._preorder(self.root, lst)
+            return self._preorder(self.root)
         elif order == 'postorder':
-            self._postorder(self.root, lst)
+            return self._postorder(self.root)
         else:
-            self._inorder(self.root, lst)
-        return lst
+            return self._inorder(self.root)
 
-    def _inorder(self, root, lst):
+    def _inorder(self, root):
         if root is not None:
-            self._inorder(root.left, lst)
-            lst.append(root.key)
-            self._inorder(root.right, lst)
+            yield from self._inorder(root.left)
+            yield root.key
+            yield from self._inorder(root.right)
 
-    def _preorder(self, root, lst):
+    def _preorder(self, root):
         if root is not None:
-            lst.append(root.key)
-            self._preorder(root.left, lst)
-            self._preorder(root.right, lst)
+            yield root.key
+            yield from self._preorder(root.left)
+            yield from self._preorder(root.right)
 
-    def _postorder(self, root, lst):
+    def _postorder(self, root):
         if root is not None:
-            self._postorder(root.left, lst)
-            self._postorder(root.right, lst)
-            lst.append(root.key)
+            yield from self._postorder(root.left)
+            yield from self._postorder(root.right)
+            yield root.key
 
