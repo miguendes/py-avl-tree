@@ -284,3 +284,17 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.left.left.key, 10)
         self.assertEqual(root.right.right.key, 30)
         self.assertEqual(root.left.right.key, 23)
+
+    def test_traversal(self):
+        tree = AvlTree()
+
+        tree.insert(20)
+        tree.insert(10)
+        tree.insert(25)
+        tree.insert(23)
+        tree.insert(29)
+        tree.insert(30)
+
+        self.assertListEqual(tree.traverse('preorder'), [25, 20, 10, 23, 29, 30])
+        self.assertListEqual(tree.traverse(), [10, 20, 23, 25, 29, 30])
+        self.assertListEqual(tree.traverse('postorder'), [10, 23, 20, 30, 29, 25])

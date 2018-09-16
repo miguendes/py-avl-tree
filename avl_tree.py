@@ -86,3 +86,32 @@ class AvlTree:
 
     def insert(self, elem):
         self.root = self.root.insert(elem)
+
+    def traverse(self, order='inorder'):
+        lst = []
+        if order == 'preorder':
+            self._preorder(self.root, lst)
+        elif order == 'postorder':
+            self._postorder(self.root, lst)
+        else:
+            self._inorder(self.root, lst)
+        return lst
+
+    def _inorder(self, root, lst):
+        if root is not None:
+            self._inorder(root.left, lst)
+            lst.append(root.key)
+            self._inorder(root.right, lst)
+
+    def _preorder(self, root, lst):
+        if root is not None:
+            lst.append(root.key)
+            self._preorder(root.left, lst)
+            self._preorder(root.right, lst)
+
+    def _postorder(self, root, lst):
+        if root is not None:
+            self._postorder(root.left, lst)
+            self._postorder(root.right, lst)
+            lst.append(root.key)
+
