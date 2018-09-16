@@ -1,3 +1,7 @@
+def get_height(node):
+    return node.height if node is not None else 0
+
+
 class _AvlNode:
     def __init__(self, key=None):
         self.key = key
@@ -25,9 +29,11 @@ class _AvlNode:
         self.update_height()
         return self._new_root_if_umbalanced()
 
+    def _left_right_heights(self):
+        return get_height(self.left), get_height(self.right)
+
     def update_height(self):
-        left_height = self.left.height if self.left is not None else 0
-        right_height = self.right.height if self.right is not None else 0
+        left_height, right_height = self._left_right_heights()
         self.height = 1 + max(left_height, right_height)
 
     def _new_root_if_umbalanced(self):
@@ -72,8 +78,7 @@ class _AvlNode:
 
     @property
     def balance_factor(self):
-        left_height = self.left.height if self.left is not None else 0
-        right_height = self.right.height if self.right is not None else 0
+        left_height, right_height = self._left_right_heights()
         return left_height - right_height
 
 
@@ -112,4 +117,3 @@ class AVLTree:
             yield from self._postorder(root.left)
             yield from self._postorder(root.right)
             yield root.key
-
