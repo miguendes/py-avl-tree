@@ -27,7 +27,7 @@ class _AvlNode:
             raise RuntimeError
 
         self.update_height()
-        return self._new_root_if_umbalanced()
+        return self._new_root_if_unbalanced()
 
     def _left_right_heights(self):
         return get_height(self.left), get_height(self.right)
@@ -36,7 +36,7 @@ class _AvlNode:
         left_height, right_height = self._left_right_heights()
         self.height = 1 + max(left_height, right_height)
 
-    def _new_root_if_umbalanced(self):
+    def _new_root_if_unbalanced(self):
         if self.balance_factor == 2 and self.left.balance_factor == -1:
             return self.rotate_left_right()
         elif self.balance_factor == -2 and self.right.balance_factor == 1:
