@@ -1,10 +1,6 @@
 from collections import deque
 
 
-def get_height(node):
-    return node.height if node is not None else 0
-
-
 class _EmptyAVLNode:
     def __init__(self):
         self.height = 0
@@ -37,7 +33,7 @@ class _AVLNode:
         return self._new_root_if_unbalanced()
 
     def _left_right_heights(self):
-        return get_height(self.left), get_height(self.right)
+        return self.left.height, self.right.height
 
     def update_height(self):
         left_height, right_height = self._left_right_heights()
@@ -147,7 +143,7 @@ class AVLTree:
                 yield root.key
                 left = root.left
                 right = root.right
-                
+
                 if not left.empty:
                     q.append(left)
                 if not right.empty:
