@@ -89,15 +89,28 @@ class _AVLNode:
 
 class AVLTree:
     def __init__(self):
+        """Initialize an AVL Tree. """
         self.root = _AVLNode()
 
     def empty(self):
         return self.root.key is None
 
     def insert(self, elem):
+        """T.insert(elem) -- insert elem"""
         self.root = self.root.insert(elem)
 
     def traverse(self, order='inorder'):
+        """Traverse the tree based on a given strategy.
+
+        order : 'preorder' | 'postorder' | 'bfs' | default 'inorder'
+            The traversal of the tree.
+
+            Use 'preorder' to print the root first, then left and right subtree, respectively.
+            Use 'postorder' to print the left and right subree first, then the root.
+            Use 'bfs' to visit the tree in a breadth-first manner.
+            The default is 'inorder' which prints the left subtree, the root and the right subtree.
+
+        """
         if order == 'preorder':
             return self._preorder(self.root)
         elif order == 'postorder':
@@ -109,6 +122,7 @@ class AVLTree:
 
     @property
     def height(self):
+        """Returns the height of the tree. When the tree is empty its height is zero."""
         return self.root.height
 
     def _inorder(self, root):
