@@ -1,3 +1,6 @@
+from collections import deque
+
+
 def get_height(node):
     return node.height if node is not None else 0
 
@@ -105,6 +108,8 @@ class AVLTree:
             return self._preorder(self.root)
         elif order == 'postorder':
             return self._postorder(self.root)
+        elif order == 'bfs':
+            return self._bfs()
         else:
             return self._inorder(self.root)
 
@@ -129,3 +134,21 @@ class AVLTree:
             yield from self._postorder(root.left)
             yield from self._postorder(root.right)
             yield root.key
+
+    def _bfs(self):
+        root = self.root
+
+        if not root.empty:
+            q = deque()
+            q.append(root)
+
+            while q:
+                root = q.popleft()
+                yield root.key
+                left = root.left
+                right = root.right
+                
+                if not left.empty:
+                    q.append(left)
+                if not right.empty:
+                    q.append(right)
