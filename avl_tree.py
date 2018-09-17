@@ -8,9 +8,9 @@ class _EmptyAVLNode:
     def insert(self, key):
         return _AVLNode(key)
 
-    @property
-    def empty(self):
-        return True
+    def __bool__(self):
+        """Returns True if the node is not empty"""
+        return False
 
     @property
     def balance_factor(self):
@@ -82,9 +82,9 @@ class _AVLNode:
     def balance_factor(self):
         return self.left.height - self.right.height
 
-    @property
-    def empty(self):
-        return self.key is None
+    def __bool__(self):
+        """Returns True if the node is not None"""
+        return self.key is not None
 
 
 class AVLTree:
@@ -92,7 +92,8 @@ class AVLTree:
         """Initialize an AVL Tree. """
         self.root = _AVLNode()
 
-    def empty(self):
+    def __bool__(self):
+        """Returns True if the tree is not empty"""
         return self.root.key is None
 
     def insert(self, elem):
@@ -126,19 +127,19 @@ class AVLTree:
         return self.root.height
 
     def _inorder(self, root):
-        if not root.empty:
+        if root:
             yield from self._inorder(root.left)
             yield root.key
             yield from self._inorder(root.right)
 
     def _preorder(self, root):
-        if not root.empty:
+        if root:
             yield root.key
             yield from self._preorder(root.left)
             yield from self._preorder(root.right)
 
     def _postorder(self, root):
-        if not root.empty:
+        if root:
             yield from self._postorder(root.left)
             yield from self._postorder(root.right)
             yield root.key
@@ -146,7 +147,7 @@ class AVLTree:
     def _bfs(self):
         root = self.root
 
-        if not root.empty:
+        if root:
             q = deque()
             q.append(root)
 
@@ -156,7 +157,7 @@ class AVLTree:
                 left = root.left
                 right = root.right
 
-                if not left.empty:
+                if left:
                     q.append(left)
-                if not right.empty:
+                if right:
                     q.append(right)
