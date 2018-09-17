@@ -12,6 +12,10 @@ class _EmptyAVLNode:
     def empty(self):
         return True
 
+    @property
+    def balance_factor(self):
+        return 0
+
 
 class _AVLNode:
     def __init__(self, key=None):
