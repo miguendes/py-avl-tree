@@ -27,10 +27,8 @@ class _AVLNode:
             return self
         elif key > self.key:
             self.right = self.right.insert(key)
-        elif key <= self.key:
+        elif key < self.key:
             self.left = self.left.insert(key)
-        else:
-            raise RuntimeError
 
         self.update_height()
         return self._new_root_if_unbalanced()
@@ -109,6 +107,10 @@ class AVLTree:
             return self._postorder(self.root)
         else:
             return self._inorder(self.root)
+
+    @property
+    def height(self):
+        return self.root.height
 
     def _inorder(self, root):
         if not root.empty:

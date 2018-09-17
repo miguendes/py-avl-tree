@@ -15,6 +15,17 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(tree.root.key, 9)
         self.assertFalse(tree.empty())
 
+    def test_insert_duplicated_key(self):
+        tree = AVLTree()
+        tree.insert(9)
+        tree.insert(10)
+        tree.insert(9)
+
+        self.assertEqual(tree.root.key, 9)
+        self.assertEqual(tree.root.right.key, 10)
+        self.assertEqual(tree.height, 2)
+        self.assertFalse(tree.empty())
+
     def test_smaller_key_on_the_left_of_root(self):
         tree = AVLTree()
         tree.insert(9)
