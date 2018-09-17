@@ -35,12 +35,8 @@ class _AVLNode:
         self.update_height()
         return self._new_root_if_unbalanced()
 
-    def _left_right_heights(self):
-        return self.left.height, self.right.height
-
     def update_height(self):
-        left_height, right_height = self._left_right_heights()
-        self.height = 1 + max(left_height, right_height)
+        self.height = 1 + max(self.left.height, self.right.height)
 
     def _new_root_if_unbalanced(self):
         if self.balance_factor == 2 and self.left.balance_factor == -1:
@@ -84,8 +80,7 @@ class _AVLNode:
 
     @property
     def balance_factor(self):
-        left_height, right_height = self._left_right_heights()
-        return left_height - right_height
+        return self.left.height - self.right.height
 
     @property
     def empty(self):
