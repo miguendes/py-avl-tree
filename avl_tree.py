@@ -2,11 +2,23 @@ def get_height(node):
     return node.height if node is not None else 0
 
 
-class _AvlNode:
+class _EmptyAVLNode:
+    def __init__(self):
+        self.height = 0
+
+    def insert(self, key):
+        return _AVLNode(key)
+
+    @property
+    def empty(self):
+        return True
+
+
+class _AVLNode:
     def __init__(self, key=None):
         self.key = key
-        self.left = None
-        self.right = None
+        self.left = _EmptyAVLNode()
+        self.right = _EmptyAVLNode()
         self.height = 1
 
     def insert(self, key):
@@ -14,15 +26,9 @@ class _AvlNode:
             self.key = key
             return self
         elif key > self.key:
-            if self.right is None:
-                self.right = _AvlNode(key)
-            else:
-                self.right = self.right.insert(key)
+            self.right = self.right.insert(key)
         elif key <= self.key:
-            if self.left is None:
-                self.left = _AvlNode(key)
-            else:
-                self.left = self.left.insert(key)
+            self.left = self.left.insert(key)
         else:
             raise RuntimeError
 
@@ -81,10 +87,14 @@ class _AvlNode:
         left_height, right_height = self._left_right_heights()
         return left_height - right_height
 
+    @property
+    def empty(self):
+        return self.key is None
+
 
 class AVLTree:
     def __init__(self):
-        self.root = _AvlNode()
+        self.root = _AVLNode()
 
     def empty(self):
         return self.root.key is None
@@ -101,19 +111,19 @@ class AVLTree:
             return self._inorder(self.root)
 
     def _inorder(self, root):
-        if root is not None:
+        if not root.empty:
             yield from self._inorder(root.left)
             yield root.key
             yield from self._inorder(root.right)
 
     def _preorder(self, root):
-        if root is not None:
+        if not root.empty:
             yield root.key
             yield from self._preorder(root.left)
             yield from self._preorder(root.right)
 
     def _postorder(self, root):
-        if root is not None:
+        if not root.empty:
             yield from self._postorder(root.left)
             yield from self._postorder(root.right)
             yield root.key
