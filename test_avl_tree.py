@@ -13,6 +13,8 @@ class AvlTreeTest(unittest.TestCase):
         tree.insert(9)
 
         self.assertEqual(tree.root.key, 9)
+        self.assertEqual(tree.root.left.balance_factor, 0)
+        self.assertEqual(tree.root.right.balance_factor, 0)
         self.assertFalse(tree.empty())
 
     def test_insert_duplicated_key(self):
@@ -306,10 +308,16 @@ class AvlTreeTest(unittest.TestCase):
         tree.insert(29)
         tree.insert(30)
 
-        self.assertListEqual(list(tree.traverse('preorder')), [25, 20, 10, 23, 29, 30])
-        self.assertListEqual(list(tree.traverse()), [10, 20, 23, 25, 29, 30])
-        self.assertListEqual(list(tree.traverse('postorder')), [10, 23, 20, 30, 29, 25])
-        self.assertListEqual(list(tree.traverse('bfs')), [25, 20, 29, 10, 23, 30])
+        d = {
+            'preorder': (25, 20, 10, 23, 29, 30),
+            'inorder': (10, 20, 23, 25, 29, 30),
+            'postorder': (10, 23, 20, 30, 29, 25),
+            'bfs': (25, 20, 29, 10, 23, 30),
+        }
+
+        for order, expected_value in d.items():
+            with self.subTest(f"test {order}"):
+                self.assertTupleEqual(tuple(tree.traverse(order)), expected_value)
 
 
 if __name__ == '__main__':
