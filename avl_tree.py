@@ -23,7 +23,6 @@ class _AVLNode:
     def insert(self, key):
         if self.key is None:
             self.key = key
-            return self
         elif key > self.key:
             self.right = self.right.insert(key)
         elif key < self.key:
