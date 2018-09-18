@@ -333,6 +333,18 @@ class AvlTreeTest(unittest.TestCase):
             with self.subTest(f"test {order}"):
                 self.assertTupleEqual(tuple(tree.traverse(order)), expected_value)
 
+    def test_length(self):
+        tree = AVLTree()
+
+        keys = range(150)
+        for key in keys:
+            tree.insert(key)
+        with self.subTest("test non-empty tree"):
+            self.assertEqual(len(tree), len(keys))
+
+        with self.subTest("test empty tree"):
+            self.assertEqual(len(AVLTree()), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

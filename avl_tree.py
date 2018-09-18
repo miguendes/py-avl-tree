@@ -12,6 +12,9 @@ class _EmptyAVLNode:
         """Empty node always is Falsy. """
         return False
 
+    def __len__(self):
+        return 0
+
     @property
     def balance_factor(self):
         return 0
@@ -84,6 +87,9 @@ class _AVLNode:
         """Returns True if the node is not None"""
         return self.key is not None
 
+    def __len__(self):
+        return 1 + len(self.left) + len(self.right)
+
 
 class AVLTree:
     def __init__(self):
@@ -97,6 +103,9 @@ class AVLTree:
     def insert(self, elem):
         """T.insert(elem) -- insert elem"""
         self.root = self.root.insert(elem)
+
+    def __len__(self):
+        return len(self.root)
 
     def traverse(self, order='inorder'):
         """Traverse the tree based on a given strategy.
