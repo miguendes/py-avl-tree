@@ -3,6 +3,7 @@ from collections import deque
 
 class _EmptyAVLNode:
     def __init__(self):
+        self.key = None
         self.height = 0
 
     def insert(self, key):
@@ -106,6 +107,19 @@ class AVLTree:
 
     def __len__(self):
         return len(self.root)
+
+    def __contains__(self, key):
+        root = self.root
+
+        while root:
+            if key > root.key:
+                root = root.right
+            elif key < root.key:
+                root = root.left
+            else:
+                return True
+
+        return False
 
     def traverse(self, order='inorder'):
         """Traverse the tree based on a given strategy.

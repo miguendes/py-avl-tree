@@ -345,6 +345,27 @@ class AvlTreeTest(unittest.TestCase):
         with self.subTest("test empty tree"):
             self.assertEqual(len(AVLTree()), 0)
 
+    def test_contains(self):
+        with self.subTest("test empty tree should not contain any key"):
+            self.assertNotIn(10, AVLTree())
+
+        with self.subTest("test single element must be in tree"):
+            tree = AVLTree()
+            tree.insert(10)
+
+            self.assertIn(10, tree)
+
+        with self.subTest("test element must be in tree"):
+            keys = range(128)
+
+            tree = AVLTree()
+
+            for key in keys:
+                tree.insert(key)
+
+            for key in keys:
+                self.assertIn(key, tree)
+
 
 if __name__ == '__main__':
     unittest.main()
