@@ -9,7 +9,7 @@ class _EmptyAVLNode:
         return _AVLNode(key)
 
     def __bool__(self):
-        """Returns True if the node is not empty"""
+        """Empty node always is Falsy. """
         return False
 
     @property
@@ -90,11 +90,11 @@ class _AVLNode:
 class AVLTree:
     def __init__(self):
         """Initialize an AVL Tree. """
-        self.root = _AVLNode()
+        self.root = _EmptyAVLNode()
 
     def __bool__(self):
         """Returns True if the tree is not empty"""
-        return self.root.key is None
+        return bool(self.root)
 
     def insert(self, elem):
         """T.insert(elem) -- insert elem"""

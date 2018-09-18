@@ -6,7 +6,7 @@ from avl_tree import AVLTree
 class AvlTreeTest(unittest.TestCase):
     def test_empty_tree(self):
         tree = AVLTree()
-        self.assertTrue(tree)
+        self.assertFalse(tree)
 
     def test_insert_on_empty_tree(self):
         tree = AVLTree()
@@ -15,7 +15,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(tree.root.key, 9)
         self.assertEqual(tree.root.left.balance_factor, 0)
         self.assertEqual(tree.root.right.balance_factor, 0)
-        self.assertFalse(tree)
+        self.assertTrue(tree)
 
     def test_insert_duplicated_key(self):
         tree = AVLTree()
@@ -26,7 +26,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(tree.root.key, 9)
         self.assertEqual(tree.root.right.key, 10)
         self.assertEqual(tree.height, 2)
-        self.assertFalse(tree)
+        self.assertTrue(tree)
 
     def test_smaller_key_on_the_left_of_root(self):
         tree = AVLTree()
