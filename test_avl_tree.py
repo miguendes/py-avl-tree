@@ -319,6 +319,20 @@ class AvlTreeTest(unittest.TestCase):
             with self.subTest(f"test {order}"):
                 self.assertTupleEqual(tuple(tree.traverse(order)), expected_value)
 
+    def test_empty_traversal(self):
+        tree = AVLTree()
+
+        d = {
+            'preorder': (),
+            'inorder': (),
+            'postorder': (),
+            'bfs': (),
+        }
+
+        for order, expected_value in d.items():
+            with self.subTest(f"test {order}"):
+                self.assertTupleEqual(tuple(tree.traverse(order)), expected_value)
+
 
 if __name__ == '__main__':
     unittest.main()
