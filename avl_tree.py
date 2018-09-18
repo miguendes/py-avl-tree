@@ -25,9 +25,7 @@ class _AVLNode:
         self.height = 1
 
     def insert(self, key):
-        if self.key is None:
-            self.key = key
-        elif key > self.key:
+        if key > self.key:
             self.right = self.right.insert(key)
         elif key < self.key:
             self.left = self.left.insert(key)
