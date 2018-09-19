@@ -93,9 +93,12 @@ class _AVLNode:
 
 
 class AVLTree:
-    def __init__(self):
+    def __init__(self, keys=None):
         """Initialize an AVL Tree. """
         self.root = _EmptyAVLNode()
+        if keys is not None:
+            for key in keys:
+                self.insert(key)
 
     def __bool__(self):
         """Returns True if the tree is not empty"""

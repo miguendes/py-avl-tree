@@ -395,6 +395,19 @@ class AvlTreeTest(unittest.TestCase):
                 self.assertEqual(tree3.height, int(math.log2(len(keys))))
                 self.assertEqual(len(tree3), len(keys) - 2)
 
+    def test_initialize_tree_from_sequence(self):
+        import math
+        keys = [1, 2, 3, 4, 5, 6, 7]
+        tree = AVLTree(keys)
+
+        expected_order = (4, 2, 6, 1, 3, 5, 7)
+        with self.subTest(f"bfs traversal must be have this order {expected_order}."):
+            self.assertTupleEqual(tuple(tree.traverse('bfs')), expected_order)
+        with self.subTest(f"tree must have {len(keys)} keys."):
+            self.assertEqual(len(tree), len(keys))
+        with self.subTest(f"tree must have {math.ceil(math.log2(len(keys)))} height."):
+            self.assertEqual(tree.height, math.ceil(math.log2(len(keys))))
+
 
 if __name__ == '__main__':
     unittest.main()
