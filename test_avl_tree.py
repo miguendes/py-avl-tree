@@ -366,6 +366,35 @@ class AvlTreeTest(unittest.TestCase):
             for key in keys:
                 self.assertIn(key, tree)
 
+    def test_balanced_tree_must_have_height_of_log2(self):
+        import math
+        base = 2
+
+        for exp in range(2, 13):
+            tree1 = AVLTree()
+            tree2 = AVLTree()
+            tree3 = AVLTree()
+
+            keys = [i for i in range(base ** exp)]
+            for key in keys:
+                tree1.insert(key)
+                if key == 0:
+                    continue
+                tree2.insert(key)
+                if key == 1:
+                    continue
+                tree3.insert(key)
+
+            with self.subTest(f"test inserting {len(keys)} elements."):
+                self.assertEqual(tree1.height, int(math.log2(len(keys))) + 1)
+                self.assertEqual(len(tree1), len(keys))
+            with self.subTest(f"test inserting {len(keys)-1} elements."):
+                self.assertEqual(tree2.height, int(math.log2(len(keys))))
+                self.assertEqual(len(tree2), len(keys) - 1)
+            with self.subTest(f"test inserting {len(keys)-2} elements."):
+                self.assertEqual(tree3.height, int(math.log2(len(keys))))
+                self.assertEqual(len(tree3), len(keys) - 2)
+
 
 if __name__ == '__main__':
     unittest.main()
