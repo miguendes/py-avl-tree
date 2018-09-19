@@ -95,6 +95,7 @@ class _AVLNode:
 class AVLTree:
     def __init__(self, keys=None):
         """Initialize an AVL Tree. """
+        self.root = None
         self._init_tree(keys)
 
     def _init_tree(self, keys):

@@ -411,7 +411,8 @@ class AvlTreeTest(unittest.TestCase):
     def test_constructor_not_properly_called(self):
         with self.assertRaises(TypeError) as context:
             AVLTree(4)
-        self.assertIn("AVLTree constructor called with incompatible data type: 'int' object is not iterable", str(context.exception))
+        self.assertIn("AVLTree constructor called with incompatible data type: "
+                      "'int' object is not iterable", str(context.exception))
 
 
 if __name__ == '__main__':
