@@ -414,6 +414,25 @@ class AvlTreeTest(unittest.TestCase):
         self.assertIn("AVLTree constructor called with incompatible data type: "
                       "'int' object is not iterable", str(context.exception))
 
+    def test_find_max(self):
+        keys = get_random_keys()
+        tree = AVLTree(keys)
+        self.assertEqual(tree.find_max(), max(keys))
+
+    def test_find_min(self):
+        keys = get_random_keys()
+        tree = AVLTree(keys)
+        self.assertEqual(tree.find_min(), min(keys))
+
+
+def get_random_keys():
+    from random import randint
+    a = randint(1, 500)
+    b = randint(1, 500)
+    lower, upper = min(a, b), max(a, b)
+    keys = range(lower, upper + 1)
+    return keys
+
 
 if __name__ == '__main__':
     unittest.main()

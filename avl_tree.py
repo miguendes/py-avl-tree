@@ -37,6 +37,24 @@ class _AVLNode:
         self.update_height()
         return self._new_root_if_unbalanced()
 
+    def find_max(self):
+        max_key = self.key
+        right_node = self.right
+        while right_node:
+            max_key = right_node.key
+            right_node = right_node.right
+
+        return max_key
+
+    def find_min(self):
+        min_key = self.key
+        left_node = self.left
+        while left_node:
+            min_key = left_node.key
+            left_node = left_node.left
+
+        return min_key
+
     def update_height(self):
         self.height = 1 + max(self.left.height, self.right.height)
 
@@ -193,3 +211,9 @@ class AVLTree:
                     q.append(left)
                 if right:
                     q.append(right)
+
+    def find_max(self):
+        return self.root.find_max()
+
+    def find_min(self):
+        return self.root.find_min()
