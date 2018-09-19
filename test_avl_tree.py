@@ -408,6 +408,11 @@ class AvlTreeTest(unittest.TestCase):
         with self.subTest(f"tree must have {math.ceil(math.log2(len(keys)))} height."):
             self.assertEqual(tree.height, math.ceil(math.log2(len(keys))))
 
+    def test_constructor_not_properly_called(self):
+        with self.assertRaises(TypeError) as context:
+            AVLTree(4)
+        self.assertIn("AVLTree constructor called with incompatible data type: 'int' object is not iterable", str(context.exception))
+
 
 if __name__ == '__main__':
     unittest.main()

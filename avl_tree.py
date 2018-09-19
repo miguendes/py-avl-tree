@@ -95,10 +95,17 @@ class _AVLNode:
 class AVLTree:
     def __init__(self, keys=None):
         """Initialize an AVL Tree. """
+        self._init_tree(keys)
+
+    def _init_tree(self, keys):
         self.root = _EmptyAVLNode()
         if keys is not None:
-            for key in keys:
-                self.insert(key)
+            try:
+                for key in keys:
+                    self.insert(key)
+            except (ValueError, TypeError) as e:
+                raise TypeError('AVLTree constructor called with '
+                                f'incompatible data type: {e}')
 
     def __bool__(self):
         """Returns True if the tree is not empty"""
