@@ -424,6 +424,50 @@ class AvlTreeTest(unittest.TestCase):
         tree = AVLTree(keys)
         self.assertEqual(tree.find_min(), min(keys))
 
+    def test_delete_single_element(self):
+        tree = AVLTree([1])
+
+        tree.delete(1)
+
+        self.assertNotIn(1, tree)
+        self.assertFalse(tree)
+        self.assertEqual(len(tree), 0)
+
+    def test_delete_not_existent_key(self):
+        with self.subTest(f"test delete non-existent key on a non-empty tree"):
+            self.assert_key_error([1, 2, 3], 10)
+
+        with self.subTest(f"test delete non-existent key on a empty tree"):
+            self.assert_key_error(None, 10)
+
+    def assert_key_error(self, keys, key_to_be_deleted):
+        with self.assertRaises(KeyError) as context:
+            tree = AVLTree(keys)
+            tree.delete(key_to_be_deleted)
+            self.assertIn(f"KeyError: {key_to_be_deleted}", str(context.exception))
+
+    def test_delete_key_but_tree_remains_balanced(self):
+        keys = [10, 5, 11, 3, 7, 15]
+        tree = AVLTree(keys)
+        key_to_be_deleted = 10
+
+        tree.delete(key_to_be_deleted)
+
+        expected_order = (7, 5, 11, 3, 15)
+        self.assertNotIn(key_to_be_deleted, tree)
+        self.assertTupleEqual(tuple(tree.traverse('bfs')), expected_order)
+
+    def test_delete_key_make_tree_unbalanced(self):
+        keys = [5, 3, 8, 2, 4, 7, 11, 1, 6, 10, 12, 9]
+        tree = AVLTree(keys)
+        key_to_be_deleted = 4
+
+        tree.delete(key_to_be_deleted)
+
+        expected_order = (8, 5, 11, 2, 7, 10, 12, 1, 3, 6, 9)
+        self.assertNotIn(key_to_be_deleted, tree)
+        self.assertTupleEqual(tuple(tree.traverse('bfs')), expected_order)
+
 
 def get_random_keys():
     from random import randint

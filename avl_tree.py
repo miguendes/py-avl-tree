@@ -9,8 +9,11 @@ class _EmptyAVLNode:
     def insert(self, key):
         return _AVLNode(key)
 
+    def delete(self, key):
+        raise KeyError(key)
+
     def __bool__(self):
-        """Empty node always is Falsy. """
+        """Empty node is always Falsy. """
         return False
 
     def __len__(self):
@@ -34,8 +37,29 @@ class _AVLNode:
         elif key < self.key:
             self.left = self.left.insert(key)
 
+        return self._balanced_tree()
+
+    def delete(self, key):
+        if key > self.key:
+            self.right = self.right.delete(key)
+        elif key < self.key:
+            self.left = self.left.delete(key)
+        else:
+            if self.is_leaf():
+                return _EmptyAVLNode()
+            left_tree = self.left
+            new_key = left_tree.find_max()
+            self.key = new_key
+            self.left = left_tree.delete(new_key)
+
+        return self._balanced_tree()
+
+    def _balanced_tree(self):
         self.update_height()
-        return self._new_root_if_unbalanced()
+        return self._balance_tree_if_unbalanced()
+
+    def is_leaf(self):
+        return not (bool(self.left) or bool(self.right))
 
     def find_max(self):
         max_key = self.key
@@ -58,7 +82,7 @@ class _AVLNode:
     def update_height(self):
         self.height = 1 + max(self.left.height, self.right.height)
 
-    def _new_root_if_unbalanced(self):
+    def _balance_tree_if_unbalanced(self):
         if self.balance_factor == 2 and self.left.balance_factor == -1:
             return self.rotate_left_right()
         elif self.balance_factor == -2 and self.right.balance_factor == 1:
@@ -133,6 +157,9 @@ class AVLTree:
     def insert(self, elem):
         """T.insert(elem) -- insert elem"""
         self.root = self.root.insert(elem)
+
+    def delete(self, elem):
+        self.root = self.root.delete(elem)
 
     def __len__(self):
         return len(self.root)
