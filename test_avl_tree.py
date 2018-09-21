@@ -468,6 +468,11 @@ class AvlTreeTest(unittest.TestCase):
         self.assertNotIn(key_to_be_deleted, tree)
         self.assertTupleEqual(tuple(tree.traverse('bfs')), expected_order)
 
+    def test_str_repr(self):
+        tree = AVLTree([1, 2, 3, 4, 5])
+        self.assertEqual(repr(tree), 'AVLTree([2, 1, 4, 3, 5])')
+        self.assertEqual(str(tree), 'AVLTree([2, 1, 4, 3, 5])')
+
 
 def get_random_keys():
     from random import randint

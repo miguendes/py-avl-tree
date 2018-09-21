@@ -244,3 +244,9 @@ class AVLTree:
 
     def find_min(self):
         return self.root.find_min()
+
+    def __repr__(self):
+        return f'AVLTree({list(self._bfs())})'
+
+    def __str__(self):
+        return repr(self)
