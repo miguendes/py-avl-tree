@@ -433,6 +433,16 @@ class AvlTreeTest(unittest.TestCase):
         self.assertFalse(tree)
         self.assertEqual(len(tree), 0)
 
+    def test_delete_leaf_node(self):
+        tree = AVLTree([1, 2])
+
+        tree.delete(2)
+
+        self.assertIn(1, tree)
+        self.assertNotIn(2, tree)
+        self.assertTrue(tree)
+        self.assertEqual(len(tree), 1)
+
     def test_delete_not_existent_key(self):
         with self.subTest(f"test delete non-existent key on a non-empty tree"):
             self.assert_key_error([1, 2, 3], 10)
@@ -467,6 +477,31 @@ class AvlTreeTest(unittest.TestCase):
         expected_order = (8, 5, 11, 2, 7, 10, 12, 1, 3, 6, 9)
         self.assertNotIn(key_to_be_deleted, tree)
         self.assertTupleEqual(tuple(tree.traverse('bfs')), expected_order)
+
+    def test_delete_keys_in_a_row(self):
+        keys = [2, 1, 4, 3, 5]
+        tree = AVLTree(keys)
+
+        tree.delete(1)
+        self.assertNotIn(1, tree)
+        self.assertTupleEqual(tuple(tree.traverse('bfs')), (4, 2, 5, 3))
+
+        tree.delete(2)
+        self.assertNotIn(2, tree)
+        self.assertTupleEqual(tuple(tree.traverse('bfs')), (4, 3, 5))
+
+        tree.delete(3)
+        self.assertNotIn(3, tree)
+        self.assertTupleEqual(tuple(tree.traverse('bfs')), (4, 5))
+
+        tree.delete(4)
+        self.assertNotIn(4, tree)
+        self.assertTupleEqual(tuple(tree.traverse('bfs')), (5,))
+
+        tree.delete(5)
+        self.assertNotIn(5, tree)
+        self.assertTupleEqual(tuple(tree.traverse('bfs')), ())
+        self.assertFalse(tree)
 
     def test_str_repr(self):
         tree = AVLTree([1, 2, 3, 4, 5])

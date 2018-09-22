@@ -50,10 +50,15 @@ class _AVLNode:
         else:
             if self.is_leaf():
                 return _EmptyAVLNode()
-            left_tree = self.left
-            new_key = left_tree.find_max()
-            self.key = new_key
-            self.left = left_tree.delete(new_key)
+
+            if self.left:
+                new_key = self.left.find_max()
+                self.key = new_key
+                self.left = self.left.delete(new_key)
+            else:
+                new_key = self.right.key
+                self.key = new_key
+                self.right = self.right.delete(new_key)
 
         return self._balanced_tree()
 
