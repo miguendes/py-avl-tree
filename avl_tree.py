@@ -150,10 +150,7 @@ class _AVLNode:
         return 1 + len(self.left) + len(self.right)
 
     def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            if self.height == other.height and len(self) == len(other):
-                return self.key == other.key and self.left == other.left and self.right == other.right
-        return False
+        return self.key == other.key and self.left == other.left and self.right == other.right
 
 
 class AVLTree:
