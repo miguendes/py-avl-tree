@@ -3,14 +3,14 @@ from collections import deque
 
 class _EmptyAVLNode:
     def __init__(self):
-        self.key = None
+        self.entry = None
         self.height = 0
 
-    def insert(self, key):
-        return _AVLNode(key)
+    def insert(self, entry):
+        return _AVLNode(entry)
 
-    def delete(self, key):
-        raise KeyError(key)
+    def delete(self, entry):
+        raise KeyError(entry)
 
     def __bool__(self):
         """Empty node is always Falsy. """
@@ -28,37 +28,37 @@ class _EmptyAVLNode:
 
 
 class _AVLNode:
-    def __init__(self, key=None):
-        self.key = key
+    def __init__(self, entry=None):
+        self.entry = entry
         self.left = _EmptyAVLNode()
         self.right = _EmptyAVLNode()
         self.height = 1
 
-    def insert(self, key):
-        if key > self.key:
-            self.right = self.right.insert(key)
-        elif key < self.key:
-            self.left = self.left.insert(key)
+    def insert(self, entry):
+        if entry > self.entry:
+            self.right = self.right.insert(entry)
+        elif entry < self.entry:
+            self.left = self.left.insert(entry)
 
         return self._balanced_tree()
 
-    def delete(self, key):
-        if key > self.key:
-            self.right = self.right.delete(key)
-        elif key < self.key:
-            self.left = self.left.delete(key)
+    def delete(self, entry):
+        if entry > self.entry:
+            self.right = self.right.delete(entry)
+        elif entry < self.entry:
+            self.left = self.left.delete(entry)
         else:
             if self.is_leaf():
                 return _EmptyAVLNode()
 
             if self.left:
-                new_key = self.left.find_max()
-                self.key = new_key
-                self.left = self.left.delete(new_key)
+                new_entry = self.left.max()
+                self.entry = new_entry
+                self.left = self.left.delete(new_entry)
             else:
-                new_key = self.right.key
-                self.key = new_key
-                self.right = self.right.delete(new_key)
+                new_entry = self.right.entry
+                self.entry = new_entry
+                self.right = self.right.delete(new_entry)
 
         return self._balanced_tree()
 
@@ -77,23 +77,23 @@ class _AVLNode:
     def is_leaf(self):
         return not (bool(self.left) or bool(self.right))
 
-    def find_max(self):
-        max_key = self.key
+    def max(self):
+        max_entry = self.entry
         right_node = self.right
         while right_node:
-            max_key = right_node.key
+            max_entry = right_node.entry
             right_node = right_node.right
 
-        return max_key
+        return max_entry
 
-    def find_min(self):
-        min_key = self.key
+    def min(self):
+        min_entry = self.entry
         left_node = self.left
         while left_node:
-            min_key = left_node.key
+            min_entry = left_node.entry
             left_node = left_node.left
 
-        return min_key
+        return min_entry
 
     def update_height(self):
         self.height = 1 + max(self.left.height, self.right.height)
@@ -144,27 +144,27 @@ class _AVLNode:
 
     def __bool__(self):
         """Returns True if the node is not None"""
-        return self.key is not None
+        return self.entry is not None
 
     def __len__(self):
         return 1 + len(self.left) + len(self.right)
 
     def __eq__(self, other):
-        return self.key == other.key and self.left == other.left and self.right == other.right
+        return self.entry == other.entry and self.left == other.left and self.right == other.right
 
 
 class AVLTree:
-    def __init__(self, keys=None):
+    def __init__(self, entries=None):
         """Initialize an AVL Tree. """
         self.root = None
-        self._init_tree(keys)
+        self._init_tree(entries)
 
-    def _init_tree(self, keys):
+    def _init_tree(self, entries):
         self.root = _EmptyAVLNode()
-        if keys is not None:
+        if entries is not None:
             try:
-                for key in keys:
-                    self.insert(key)
+                for entry in entries:
+                    self.insert(entry)
             except (ValueError, TypeError) as e:
                 raise TypeError('AVLTree constructor called with '
                                 f'incompatible data type: {e}')
@@ -173,23 +173,23 @@ class AVLTree:
         """Returns True if the tree is not empty"""
         return bool(self.root)
 
-    def insert(self, elem):
+    def insert(self, entry):
         """T.insert(elem) -- insert elem"""
-        self.root = self.root.insert(elem)
+        self.root = self.root.insert(entry)
 
-    def delete(self, elem):
-        self.root = self.root.delete(elem)
+    def delete(self, entry):
+        self.root = self.root.delete(entry)
 
     def __len__(self):
         return len(self.root)
 
-    def __contains__(self, key):
+    def __contains__(self, entry):
         root = self.root
 
         while root:
-            if key > root.key:
+            if entry > root.entry:
                 root = root.right
-            elif key < root.key:
+            elif entry < root.entry:
                 root = root.left
             else:
                 return True
@@ -225,12 +225,12 @@ class AVLTree:
     def _inorder(self, root):
         if root:
             yield from self._inorder(root.left)
-            yield root.key
+            yield root.entry
             yield from self._inorder(root.right)
 
     def _preorder(self, root):
         if root:
-            yield root.key
+            yield root.entry
             yield from self._preorder(root.left)
             yield from self._preorder(root.right)
 
@@ -238,7 +238,7 @@ class AVLTree:
         if root:
             yield from self._postorder(root.left)
             yield from self._postorder(root.right)
-            yield root.key
+            yield root.entry
 
     def _bfs(self):
         root = self.root
@@ -249,7 +249,7 @@ class AVLTree:
 
             while q:
                 root = q.popleft()
-                yield root.key
+                yield root.entry
                 left = root.left
                 right = root.right
 
@@ -258,11 +258,11 @@ class AVLTree:
                 if right:
                     q.append(right)
 
-    def find_max(self):
-        return self.root.find_max()
+    def max(self):
+        return self.root.max()
 
-    def find_min(self):
-        return self.root.find_min()
+    def min(self):
+        return self.root.min()
 
     def __repr__(self):
         return f'AVLTree({list(self._bfs())})'
