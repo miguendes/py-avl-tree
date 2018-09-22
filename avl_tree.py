@@ -161,7 +161,7 @@ class AVLTree:
 
     def _init_tree(self, args):
         self.root = _EmptyAVLNode()
-        
+
         if args is not None:
             if isinstance(args, self.__class__):
                 args = args.traverse('bfs')
@@ -269,7 +269,7 @@ class AVLTree:
         return self.root.min()
 
     def __repr__(self):
-        return f'AVLTree({list(self._bfs())})'
+        return f'{self.__class__.__name__}({list(self._bfs())})'
 
     def __str__(self):
         return repr(self)
