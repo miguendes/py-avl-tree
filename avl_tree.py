@@ -154,16 +154,20 @@ class _AVLNode:
 
 
 class AVLTree:
-    def __init__(self, entries=None):
+    def __init__(self, args=None):
         """Initialize an AVL Tree. """
         self.root = None
-        self._init_tree(entries)
+        self._init_tree(args)
 
-    def _init_tree(self, entries):
+    def _init_tree(self, args):
         self.root = _EmptyAVLNode()
-        if entries is not None:
+        
+        if args is not None:
+            if isinstance(args, self.__class__):
+                args = args.traverse('bfs')
+
             try:
-                for entry in entries:
+                for entry in args:
                     self.insert(entry)
             except (ValueError, TypeError) as e:
                 raise TypeError('AVLTree constructor called with '
