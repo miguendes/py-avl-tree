@@ -521,6 +521,12 @@ class AvlTreeTest(unittest.TestCase):
         with self.subTest(f"test tree is different from other classes"):
             self.assertNotEqual(tree1, int(9))
 
+    def test_clear(self):
+        tree = AVLTree([1, 2, 3, 4, 5])
+        tree.clear()
+
+        self.assertFalse(tree)
+
 
 def get_random_keys():
     from random import randint

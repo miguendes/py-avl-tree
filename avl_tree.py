@@ -62,6 +62,14 @@ class _AVLNode:
 
         return self._balanced_tree()
 
+    def clear(self):
+        if self.is_leaf():
+            return _EmptyAVLNode()
+        self.left = self.left.clear()
+        self.right = self.right.clear()
+
+        return _EmptyAVLNode()
+
     def _balanced_tree(self):
         self.update_height()
         return self._balance_tree_if_unbalanced()
@@ -270,3 +278,6 @@ class AVLTree:
             if self.height == other.height and len(self) == len(other):
                 return self.root == other.root
         return False
+
+    def clear(self):
+        self.root = self.root.clear()
