@@ -23,6 +23,9 @@ class _EmptyAVLNode:
     def balance_factor(self):
         return 0
 
+    def __eq__(self, other):
+        return isinstance(other, self.__class__)
+
 
 class _AVLNode:
     def __init__(self, key=None):
@@ -132,6 +135,12 @@ class _AVLNode:
 
     def __len__(self):
         return 1 + len(self.left) + len(self.right)
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            if self.height == other.height and len(self) == len(other):
+                return self.key == other.key and self.left == other.left and self.right == other.right
+        return False
 
 
 class AVLTree:
@@ -250,3 +259,9 @@ class AVLTree:
 
     def __str__(self):
         return repr(self)
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            if self.height == other.height and len(self) == len(other):
+                return self.root == other.root
+        return False

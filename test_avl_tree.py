@@ -473,6 +473,19 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(repr(tree), 'AVLTree([2, 1, 4, 3, 5])')
         self.assertEqual(str(tree), 'AVLTree([2, 1, 4, 3, 5])')
 
+    def test_equals(self):
+        tree1 = AVLTree([1, 2, 3, 4, 5])
+        tree2 = AVLTree([2, 1, 4, 3, 5])
+        tree3 = AVLTree([1, 2, 3, 4, 5, 6])
+
+        with self.subTest(f"test equal trees"):
+            self.assertEqual(tree1, tree2)
+        with self.subTest(f"test different trees"):
+            self.assertNotEqual(tree1, tree3)
+            self.assertNotEqual(tree2, tree3)
+        with self.subTest(f"test tree is different from other classes"):
+            self.assertNotEqual(tree1, int(9))
+
 
 def get_random_keys():
     from random import randint
