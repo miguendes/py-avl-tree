@@ -12,15 +12,15 @@ class _EmptyAVLNode:
     def delete(self, entry):
         raise KeyError(entry)
 
+    @property
+    def balance_factor(self):
+        return 0
+
     def __bool__(self):
         """Empty node is always Falsy. """
         return False
 
     def __len__(self):
-        return 0
-
-    @property
-    def balance_factor(self):
         return 0
 
     def __eq__(self, other):
@@ -70,10 +70,6 @@ class _AVLNode:
 
         return _EmptyAVLNode()
 
-    def _balanced_tree(self):
-        self.update_height()
-        return self._balance_tree_if_unbalanced()
-
     def is_leaf(self):
         return not (bool(self.left) or bool(self.right))
 
@@ -95,49 +91,6 @@ class _AVLNode:
 
         return min_entry
 
-    def update_height(self):
-        self.height = 1 + max(self.left.height, self.right.height)
-
-    def _balance_tree_if_unbalanced(self):
-        if self.balance_factor == 2 and self.left.balance_factor == -1:
-            return self.rotate_left_right()
-        elif self.balance_factor == -2 and self.right.balance_factor == 1:
-            return self.rotate_right_left()
-        elif self.balance_factor == -2:
-            return self.rotate_left()
-        elif self.balance_factor == 2:
-            return self.rotate_right()
-        else:
-            return self
-
-    def rotate_left(self):
-        right_tree = self.right
-        self.right = right_tree.left
-        right_tree.left = self
-
-        self.update_height()
-        right_tree.update_height()
-
-        return right_tree
-
-    def rotate_right(self):
-        left_tree = self.left
-        self.left = left_tree.right
-        left_tree.right = self
-
-        self.update_height()
-        left_tree.update_height()
-
-        return left_tree
-
-    def rotate_left_right(self):
-        self.left = self.left.rotate_left()
-        return self.rotate_right()
-
-    def rotate_right_left(self):
-        self.right = self.right.rotate_right()
-        return self.rotate_left()
-
     @property
     def balance_factor(self):
         return self.left.height - self.right.height
@@ -152,6 +105,53 @@ class _AVLNode:
     def __eq__(self, other):
         return self.entry == other.entry and self.left == other.left and self.right == other.right
 
+    def _balanced_tree(self):
+        self._update_height()
+        return self._balance_tree_if_unbalanced()
+
+    def _update_height(self):
+        self.height = 1 + max(self.left.height, self.right.height)
+
+    def _balance_tree_if_unbalanced(self):
+        if self.balance_factor == 2 and self.left.balance_factor == -1:
+            return self._rotate_left_right()
+        elif self.balance_factor == -2 and self.right.balance_factor == 1:
+            return self._rotate_right_left()
+        elif self.balance_factor == -2:
+            return self._rotate_left()
+        elif self.balance_factor == 2:
+            return self._rotate_right()
+        else:
+            return self
+
+    def _rotate_left(self):
+        right_tree = self.right
+        self.right = right_tree.left
+        right_tree.left = self
+
+        self._update_height()
+        right_tree._update_height()
+
+        return right_tree
+
+    def _rotate_right(self):
+        left_tree = self.left
+        self.left = left_tree.right
+        left_tree.right = self
+
+        self._update_height()
+        left_tree._update_height()
+
+        return left_tree
+
+    def _rotate_left_right(self):
+        self.left = self.left._rotate_left()
+        return self._rotate_right()
+
+    def _rotate_right_left(self):
+        self.right = self.right._rotate_right()
+        return self._rotate_left()
+
 
 class AVLTree:
     def __init__(self, args=None):
@@ -159,46 +159,12 @@ class AVLTree:
         self.root = None
         self._init_tree(args)
 
-    def _init_tree(self, args):
-        self.root = _EmptyAVLNode()
-
-        if args is not None:
-            if isinstance(args, self.__class__):
-                args = args.traverse('bfs')
-
-            try:
-                for entry in args:
-                    self.insert(entry)
-            except (ValueError, TypeError) as e:
-                raise TypeError('AVLTree constructor called with '
-                                f'incompatible data type: {e}')
-
-    def __bool__(self):
-        """Returns True if the tree is not empty"""
-        return bool(self.root)
-
     def insert(self, entry):
         """T.insert(elem) -- insert elem"""
         self.root = self.root.insert(entry)
 
     def delete(self, entry):
         self.root = self.root.delete(entry)
-
-    def __len__(self):
-        return len(self.root)
-
-    def __contains__(self, entry):
-        root = self.root
-
-        while root:
-            if entry > root.entry:
-                root = root.right
-            elif entry < root.entry:
-                root = root.left
-            else:
-                return True
-
-        return False
 
     def traverse(self, order='inorder'):
         """Traverse the tree based on a given strategy.
@@ -225,6 +191,61 @@ class AVLTree:
     def height(self):
         """Returns the height of the tree. When the tree is empty its height is zero."""
         return self.root.height
+
+    def __len__(self):
+        return len(self.root)
+
+    def __contains__(self, entry):
+        root = self.root
+
+        while root:
+            if entry > root.entry:
+                root = root.right
+            elif entry < root.entry:
+                root = root.left
+            else:
+                return True
+
+        return False
+
+    def max(self):
+        return self.root.max()
+
+    def min(self):
+        return self.root.min()
+
+    def clear(self):
+        self.root = self.root.clear()
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}({list(self._bfs())})'
+
+    def __str__(self):
+        return repr(self)
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            if self.height == other.height and len(self) == len(other):
+                return self.root == other.root
+        return False
+
+    def __bool__(self):
+        """Returns True if the tree is not empty"""
+        return bool(self.root)
+
+    def _init_tree(self, args):
+        self.root = _EmptyAVLNode()
+
+        if args is not None:
+            if isinstance(args, self.__class__):
+                args = args.traverse('bfs')
+
+            try:
+                for entry in args:
+                    self.insert(entry)
+            except (ValueError, TypeError) as e:
+                raise TypeError('AVLTree constructor called with '
+                                f'incompatible data type: {e}')
 
     def _inorder(self, root):
         if root:
@@ -261,24 +282,3 @@ class AVLTree:
                     q.append(left)
                 if right:
                     q.append(right)
-
-    def max(self):
-        return self.root.max()
-
-    def min(self):
-        return self.root.min()
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}({list(self._bfs())})'
-
-    def __str__(self):
-        return repr(self)
-
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            if self.height == other.height and len(self) == len(other):
-                return self.root == other.root
-        return False
-
-    def clear(self):
-        self.root = self.root.clear()
