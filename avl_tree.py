@@ -2,18 +2,22 @@ from collections import deque
 
 
 class _EmptyAVLNode:
+    """Internal object, represents an empty tree node using Null Object Pattern."""
     def __init__(self):
         self.entry = None
         self.height = 0
 
     def insert(self, entry):
+        """Inserting a entry in a EmptyNode means returning a concrete node back."""
         return _AVLNode(entry)
 
     def delete(self, entry):
+        """Cannot delete a entry from a EmptyNode"""
         raise KeyError(entry)
 
     @property
     def balance_factor(self):
+        """The balance factor of a empty node is always 0."""
         return 0
 
     def __bool__(self):
@@ -21,20 +25,26 @@ class _EmptyAVLNode:
         return False
 
     def __len__(self):
+        """The lenght of a empty node is always 0."""
         return 0
 
     def __eq__(self, other):
+        """Checks if a EmptyNode is equal to other"""
         return isinstance(other, self.__class__)
 
 
 class _AVLNode:
+    """Internal object, represents a tree node."""
+
     def __init__(self, entry=None):
+        """Creates a new node."""
         self.entry = entry
         self.left = _EmptyAVLNode()
         self.right = _EmptyAVLNode()
         self.height = 1
 
     def insert(self, entry):
+        """Inserts a entry to the subtree."""
         if entry > self.entry:
             self.right = self.right.insert(entry)
         elif entry < self.entry:
@@ -43,6 +53,7 @@ class _AVLNode:
         return self._balanced_tree()
 
     def delete(self, entry):
+        """Deletes a entry from subtree and return it balanced."""
         if entry > self.entry:
             self.right = self.right.delete(entry)
         elif entry < self.entry:
@@ -63,6 +74,7 @@ class _AVLNode:
         return self._balanced_tree()
 
     def clear(self):
+        """Clears the whole subtree"""
         if self.is_leaf():
             return _EmptyAVLNode()
         self.left = self.left.clear()
@@ -71,9 +83,11 @@ class _AVLNode:
         return _EmptyAVLNode()
 
     def is_leaf(self):
+        """Checks if the node is a leaf node, i. e, if its siblings are empty."""
         return not (bool(self.left) or bool(self.right))
 
     def max(self):
+        """Returns the max element in the subtree."""
         max_entry = self.entry
         right_node = self.right
         while right_node:
@@ -83,6 +97,7 @@ class _AVLNode:
         return max_entry
 
     def min(self):
+        """Returns the min element in the subtree."""
         min_entry = self.entry
         left_node = self.left
         while left_node:
@@ -93,6 +108,7 @@ class _AVLNode:
 
     @property
     def balance_factor(self):
+        """Returns the balance factor of the node."""
         return self.left.height - self.right.height
 
     def __bool__(self):
@@ -100,19 +116,24 @@ class _AVLNode:
         return self.entry is not None
 
     def __len__(self):
+        """Return the number of elements in this subtree."""
         return 1 + len(self.left) + len(self.right)
 
     def __eq__(self, other):
+        """Checks if two nodes are equal."""
         return self.entry == other.entry and self.left == other.left and self.right == other.right
 
     def _balanced_tree(self):
+        """Returns balanced tree after balance operation."""
         self._update_height()
         return self._balance_tree_if_unbalanced()
 
     def _update_height(self):
+        """Updated the height if tree has been rebalanced."""
         self.height = 1 + max(self.left.height, self.right.height)
 
     def _balance_tree_if_unbalanced(self):
+        """Performs the appropriate rotation if the the subtree is unbalanced."""
         if self.balance_factor == 2 and self.left.balance_factor == -1:
             return self._rotate_left_right()
         elif self.balance_factor == -2 and self.right.balance_factor == 1:
@@ -125,6 +146,7 @@ class _AVLNode:
             return self
 
     def _rotate_left(self):
+        """Performs a left rotation."""
         right_tree = self.right
         self.right = right_tree.left
         right_tree.left = self
@@ -135,6 +157,7 @@ class _AVLNode:
         return right_tree
 
     def _rotate_right(self):
+        """Performs a right rotation."""
         left_tree = self.left
         self.left = left_tree.right
         left_tree.right = self
@@ -145,25 +168,52 @@ class _AVLNode:
         return left_tree
 
     def _rotate_left_right(self):
+        """Performs a LR rotation"""
         self.left = self.left._rotate_left()
         return self._rotate_right()
 
     def _rotate_right_left(self):
+        """Performs a RL rotation"""
         self.right = self.right._rotate_right()
         return self._rotate_left()
 
 
 class AVLTree:
+    """
+    AVLTree implements a balanced binary tree.
+
+    Reference: http://en.wikipedia.org/wiki/AVL_tree
+
+    In computer science, an AVL tree is a self-balancing binary search tree, and
+    it is the first such data structure to be invented. In an AVL tree, the
+    heights of the two child subtrees of any node differ by at most one;
+    therefore, it is also said to be height-balanced. Lookup, insertion, and
+    deletion all take O(log n) time in both the average and worst cases, where n
+    is the number of nodes in the tree prior to the operation. Insertions and
+    deletions may require the tree to be rebalanced by one or more tree rotations.
+    The AVL tree is named after its two inventors, G.M. Adelson-Velskii and E.M.
+    Landis, who published it in their 1962 paper "An algorithm for the
+    organization of information."
+
+    AVLTree expected comparable objects as entries.
+
+    AVLTree() -> new empty tree.
+    AVLTree(tree) -> new tree initialized from a tree
+    AVLTree(seq) -> new tree initialized from seq [(entry1), (entry2), ... (entryN)]
+
+    """
+
     def __init__(self, args=None):
         """Initialize an AVL Tree. """
         self.root = None
         self._init_tree(args)
 
     def insert(self, entry):
-        """T.insert(elem) -- insert elem"""
+        """T.insert(entry) -- insert elem"""
         self.root = self.root.insert(entry)
 
     def delete(self, entry):
+        """T.remove(entry) remove item <entry> from tree."""
         self.root = self.root.delete(entry)
 
     def traverse(self, order='inorder'):
@@ -193,9 +243,11 @@ class AVLTree:
         return self.root.height
 
     def __len__(self):
+        """T.__len__() <==> len(x). Retuns the number of elements in the tree."""
         return len(self.root)
 
     def __contains__(self, entry):
+        """k in T -> True if T has a entry k, else False"""
         root = self.root
 
         while root:
@@ -209,21 +261,28 @@ class AVLTree:
         return False
 
     def max(self):
+        """T.max() -> get the maximum entry of T."""
         return self.root.max()
 
     def min(self):
+        """T.min() -> get the minimum entry of T."""
         return self.root.min()
 
     def clear(self):
+        """T.clear() -> Removes all entries of T leaving it empty."""
         self.root = self.root.clear()
 
     def __repr__(self):
+        """T.__repr__(...) <==> repr(x).
+        Returns representation of the object that can be used to recreate the tree with the same values."""
         return f'{self.__class__.__name__}({list(self._bfs())})'
 
     def __str__(self):
+        """T.__str__(...) <==> str(x)."""
         return repr(self)
 
     def __eq__(self, other):
+        """Checks if two trees are equal. """
         if isinstance(other, self.__class__):
             if self.height == other.height and len(self) == len(other):
                 return self.root == other.root
@@ -234,6 +293,7 @@ class AVLTree:
         return bool(self.root)
 
     def _init_tree(self, args):
+        """Initialize the tree according to the arguments passed. """
         self.root = _EmptyAVLNode()
 
         if args is not None:
@@ -248,24 +308,28 @@ class AVLTree:
                                 f'incompatible data type: {e}')
 
     def _inorder(self, root):
+        """Performs an in-order traversal. """
         if root:
             yield from self._inorder(root.left)
             yield root.entry
             yield from self._inorder(root.right)
 
     def _preorder(self, root):
+        """Performs an pre-order traversal."""
         if root:
             yield root.entry
             yield from self._preorder(root.left)
             yield from self._preorder(root.right)
 
     def _postorder(self, root):
+        """Performs an post-order traversal."""
         if root:
             yield from self._postorder(root.left)
             yield from self._postorder(root.right)
             yield root.entry
 
     def _bfs(self):
+        """Performs an Breadth first traversal."""
         root = self.root
 
         if root:
