@@ -85,7 +85,7 @@ class _AVLNode:
             self.left = self.left.delete(entry)
         else:
             if self.is_leaf():
-                return _EmptyAVLNode()
+                return EMPTY_NODE
 
             if self.left:
                 new_entry = self.left.max()
@@ -101,11 +101,11 @@ class _AVLNode:
     def clear(self):
         """Clears the whole subtree"""
         if self.is_leaf():
-            return _EmptyAVLNode()
+            return EMPTY_NODE
         self.left = self.left.clear()
         self.right = self.right.clear()
 
-        return _EmptyAVLNode()
+        return EMPTY_NODE
 
     def is_leaf(self):
         """Checks if the node is a leaf node, i. e, if its siblings are empty."""
@@ -319,7 +319,7 @@ class AVLTree:
 
     def _init_tree(self, args):
         """Initialize the tree according to the arguments passed. """
-        self.root = _EmptyAVLNode()
+        self.root = EMPTY_NODE
 
         if args is not None:
             if isinstance(args, self.__class__):
