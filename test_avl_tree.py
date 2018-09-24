@@ -358,11 +358,11 @@ class AvlTreeTest(unittest.TestCase):
     def test_length(self):
         tree = AVLTree()
 
-        entrys = range(150)
-        for entry in entrys:
+        entries = range(150)
+        for entry in entries:
             tree.insert(entry)
         with self.subTest("test non-empty tree"):
-            self.assertEqual(len(tree), len(entrys))
+            self.assertEqual(len(tree), len(entries))
 
         with self.subTest("test empty tree"):
             self.assertEqual(len(AVLTree()), 0)
@@ -378,14 +378,14 @@ class AvlTreeTest(unittest.TestCase):
             self.assertIn(10, tree)
 
         with self.subTest("test element must be in tree"):
-            entrys = range(128)
+            entries = range(128)
 
             tree = AVLTree()
 
-            for entry in entrys:
+            for entry in entries:
                 tree.insert(entry)
 
-            for entry in entrys:
+            for entry in entries:
                 self.assertIn(entry, tree)
 
     def test_balanced_tree_must_have_height_of_log2(self):
@@ -397,8 +397,8 @@ class AvlTreeTest(unittest.TestCase):
             tree2 = AVLTree()
             tree3 = AVLTree()
 
-            entrys = [i for i in range(base ** exp)]
-            for entry in entrys:
+            entries = [i for i in range(base ** exp)]
+            for entry in entries:
                 tree1.insert(entry)
                 if entry == 0:
                     continue
@@ -407,28 +407,28 @@ class AvlTreeTest(unittest.TestCase):
                     continue
                 tree3.insert(entry)
 
-            with self.subTest(f"test inserting {len(entrys)} elements."):
-                self.assertEqual(tree1.height, int(math.log2(len(entrys))) + 1)
-                self.assertEqual(len(tree1), len(entrys))
-            with self.subTest(f"test inserting {len(entrys)-1} elements."):
-                self.assertEqual(tree2.height, int(math.log2(len(entrys))))
-                self.assertEqual(len(tree2), len(entrys) - 1)
-            with self.subTest(f"test inserting {len(entrys)-2} elements."):
-                self.assertEqual(tree3.height, int(math.log2(len(entrys))))
-                self.assertEqual(len(tree3), len(entrys) - 2)
+            with self.subTest(f"test inserting {len(entries)} elements."):
+                self.assertEqual(tree1.height, int(math.log2(len(entries))) + 1)
+                self.assertEqual(len(tree1), len(entries))
+            with self.subTest(f"test inserting {len(entries)-1} elements."):
+                self.assertEqual(tree2.height, int(math.log2(len(entries))))
+                self.assertEqual(len(tree2), len(entries) - 1)
+            with self.subTest(f"test inserting {len(entries)-2} elements."):
+                self.assertEqual(tree3.height, int(math.log2(len(entries))))
+                self.assertEqual(len(tree3), len(entries) - 2)
 
     def test_initialize_tree_from_sequence(self):
         import math
-        entrys = [1, 2, 3, 4, 5, 6, 7]
-        tree = AVLTree(entrys)
+        entries = [1, 2, 3, 4, 5, 6, 7]
+        tree = AVLTree(entries)
 
         expected_order = (4, 2, 6, 1, 3, 5, 7)
         with self.subTest(f"bfs traversal must be have this order {expected_order}."):
             self.assertTupleEqual(tuple(tree.traverse('bfs')), expected_order)
-        with self.subTest(f"tree must have {len(entrys)} entrys."):
-            self.assertEqual(len(tree), len(entrys))
-        with self.subTest(f"tree must have {math.ceil(math.log2(len(entrys)))} height."):
-            self.assertEqual(tree.height, math.ceil(math.log2(len(entrys))))
+        with self.subTest(f"tree must have {len(entries)} entries."):
+            self.assertEqual(len(tree), len(entries))
+        with self.subTest(f"tree must have {math.ceil(math.log2(len(entries)))} height."):
+            self.assertEqual(tree.height, math.ceil(math.log2(len(entries))))
 
     def test_constructor_not_properly_called(self):
         with self.assertRaises(TypeError) as context:
@@ -437,14 +437,14 @@ class AvlTreeTest(unittest.TestCase):
                       "'int' object is not iterable", str(context.exception))
 
     def test_find_max(self):
-        entrys = get_random_entries()
-        tree = AVLTree(entrys)
-        self.assertEqual(tree.max(), max(entrys))
+        entries = get_random_entries()
+        tree = AVLTree(entries)
+        self.assertEqual(tree.max(), max(entries))
 
     def test_find_min(self):
-        entrys = get_random_entries()
-        tree = AVLTree(entrys)
-        self.assertEqual(tree.min(), min(entrys))
+        entries = get_random_entries()
+        tree = AVLTree(entries)
+        self.assertEqual(tree.min(), min(entries))
 
     def test_delete_single_element(self):
         tree = AVLTree([1])
@@ -479,8 +479,8 @@ class AvlTreeTest(unittest.TestCase):
             self.assertIn(f"entryError: {entry_to_be_deleted}", str(context.exception))
 
     def test_delete_entry_but_tree_remains_balanced(self):
-        entrys = [10, 5, 11, 3, 7, 15]
-        tree = AVLTree(entrys)
+        entries = [10, 5, 11, 3, 7, 15]
+        tree = AVLTree(entries)
         entry_to_be_deleted = 10
 
         tree.delete(entry_to_be_deleted)
@@ -490,8 +490,8 @@ class AvlTreeTest(unittest.TestCase):
         self.assertTupleEqual(tuple(tree.traverse('bfs')), expected_order)
 
     def test_delete_entry_make_tree_unbalanced(self):
-        entrys = [5, 3, 8, 2, 4, 7, 11, 1, 6, 10, 12, 9]
-        tree = AVLTree(entrys)
+        entries = [5, 3, 8, 2, 4, 7, 11, 1, 6, 10, 12, 9]
+        tree = AVLTree(entries)
         entry_to_be_deleted = 4
 
         tree.delete(entry_to_be_deleted)
@@ -500,9 +500,9 @@ class AvlTreeTest(unittest.TestCase):
         self.assertNotIn(entry_to_be_deleted, tree)
         self.assertTupleEqual(tuple(tree.traverse('bfs')), expected_order)
 
-    def test_delete_entrys_in_a_row(self):
-        entrys = [2, 1, 4, 3, 5]
-        tree = AVLTree(entrys)
+    def test_delete_entries_in_a_row(self):
+        entries = [2, 1, 4, 3, 5]
+        tree = AVLTree(entries)
 
         tree.delete(1)
         self.assertNotIn(1, tree)
@@ -561,8 +561,8 @@ def get_random_entries():
     a = randint(1, 500)
     b = randint(1, 500)
     lower, upper = min(a, b), max(a, b)
-    entrys = range(lower, upper + 1)
-    return entrys
+    entries = range(lower, upper + 1)
+    return entries
 
 
 if __name__ == '__main__':
