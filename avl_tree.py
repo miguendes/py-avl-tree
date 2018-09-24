@@ -27,7 +27,6 @@ class _EmptyAVLNode:
     """Internal object, represents an empty tree node using Null Object Pattern."""
 
     def __init__(self):
-        self.entry = None
         self.height = 0
 
     def insert(self, entry):
