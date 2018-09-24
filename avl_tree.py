@@ -56,14 +56,17 @@ class _EmptyAVLNode:
         return isinstance(other, self.__class__)
 
 
+EMPTY_NODE = _EmptyAVLNode()
+
+
 class _AVLNode:
     """Internal object, represents a tree node."""
 
     def __init__(self, entry=None):
         """Creates a new node."""
         self.entry = entry
-        self.left = _EmptyAVLNode()
-        self.right = _EmptyAVLNode()
+        self.left = EMPTY_NODE
+        self.right = EMPTY_NODE
         self.height = 1
 
     def insert(self, entry):
