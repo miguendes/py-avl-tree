@@ -287,17 +287,11 @@ class AVLTree:
 
     def __contains__(self, entry):
         """k in T -> True if T has a entry k, else False"""
-        root = self.root
-
-        while root:
-            if entry > root.entry:
-                root = root.right
-            elif entry < root.entry:
-                root = root.left
-            else:
-                return True
-
-        return False
+        try:
+            self.search(entry)
+            return True
+        except KeyError:
+            return False
 
     def max(self):
         """T.max() -> get the maximum entry of T."""
