@@ -267,6 +267,20 @@ class AVLTree:
         """Returns the height of the tree. When the tree is empty its height is zero."""
         return self.root.height
 
+    def search(self, entry):
+        """Returns k if T has a entry k, else raise KeyError"""
+        root = self.root
+
+        while root:
+            if entry > root.entry:
+                root = root.right
+            elif entry < root.entry:
+                root = root.left
+            else:
+                return root.entry
+
+        raise KeyError(f'Entry {entry} not found.')
+
     def __len__(self):
         """T.__len__() <==> len(x). Retuns the number of elements in the tree."""
         return len(self.root)

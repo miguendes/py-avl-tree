@@ -555,6 +555,12 @@ class AvlTreeTest(unittest.TestCase):
 
         self.assertEqual(copy, AVLTree([2, 1, 4, 3, 5]))
 
+    def test_search(self):
+        tree = AVLTree([1, 2, 3, 4, 5])
+        entry = tree.search(4)
+
+        self.assertEqual(4, entry)
+
 
 def get_random_entries():
     from random import randint
