@@ -363,11 +363,12 @@ class AVLTree:
 
             while q:
                 root = q.popleft()
+                if not root:
+                    continue
+
                 yield root.entry
                 left = root.left
                 right = root.right
 
-                if left:
-                    q.append(left)
-                if right:
-                    q.append(right)
+                q.append(left)
+                q.append(right)
