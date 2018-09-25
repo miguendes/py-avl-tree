@@ -20,6 +20,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import functools
 import unittest
 
 from avl_tree import AVLTree
@@ -560,6 +561,33 @@ class AvlTreeTest(unittest.TestCase):
         entry = tree.search(4)
 
         self.assertEqual(4, entry)
+
+    def test_search_complex_data_type(self):
+        @functools.total_ordering
+        class Entry:
+            def __init__(self, a: int, b: str):
+                self.a = a
+                self.b = b
+
+            def __lt__(self, other):
+                if self.a == other.a:
+                    return self.b < other.b
+                return self.a < other.a
+
+            def __eq__(self, other):
+                return self.a == other.a and self.b == other.b
+
+            def __repr__(self):
+                return f"{self.__class__.__name__}({self.a}, {self.b})"
+
+        tree = AVLTree([Entry(1, 'a'),
+                        Entry(2, 'b'),
+                        Entry(3, 'c'),
+                        Entry(3, 'd'),])
+        entry = tree.search(Entry(3, 'd'))
+
+        self.assertEqual(Entry(3, 'd'), entry)
+
 
 
 def get_random_entries():
