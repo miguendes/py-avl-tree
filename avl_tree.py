@@ -269,6 +269,10 @@ class AVLTree:
 
     def search(self, entry):
         """Returns k if T has a entry k, else raise KeyError"""
+        return self._search(entry).entry
+
+    def _search(self, entry) -> _AVLNode:
+        """Returns node.k if T has a entry k, else raise KeyError"""
         root = self.root
 
         while root:
@@ -277,7 +281,7 @@ class AVLTree:
             elif entry < root.entry:
                 root = root.left
             else:
-                return root.entry
+                return root
 
         raise KeyError(f'Entry {entry} not found.')
 

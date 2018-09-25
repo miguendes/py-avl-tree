@@ -583,11 +583,10 @@ class AvlTreeTest(unittest.TestCase):
         tree = AVLTree([Entry(1, 'a'),
                         Entry(2, 'b'),
                         Entry(3, 'c'),
-                        Entry(3, 'd'),])
+                        Entry(3, 'd'), ])
         entry = tree.search(Entry(3, 'd'))
 
         self.assertEqual(Entry(3, 'd'), entry)
-
 
 
 def get_random_entries():
