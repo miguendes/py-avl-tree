@@ -329,6 +329,14 @@ class AVLTree:
         """Returns True if the tree is not empty"""
         return bool(self.root)
 
+    def __copy__(self):
+        """Returns a shallow copy of the tree."""
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+
     def _init_tree(self, args):
         """Initialize the tree according to the arguments passed. """
         self.root = EMPTY_NODE

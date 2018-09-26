@@ -26,6 +26,24 @@ import unittest
 from avl_tree import AVLTree
 
 
+@functools.total_ordering
+class Entry:
+    def __init__(self, a: int, b: str):
+        self.a = a
+        self.b = b
+
+    def __lt__(self, other):
+        if self.a == other.a:
+            return self.b < other.b
+        return self.a < other.a
+
+    def __eq__(self, other):
+        return self.a == other.a and self.b == other.b
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.a}, {self.b})"
+
+
 class AvlTreeTest(unittest.TestCase):
     def test_empty_tree(self):
         tree = AVLTree()
@@ -538,9 +556,12 @@ class AvlTreeTest(unittest.TestCase):
 
         with self.subTest(f"test equal trees"):
             self.assertEqual(tree1, tree2)
+            self.assertFalse(tree1 is tree2)
         with self.subTest(f"test different trees"):
             self.assertNotEqual(tree1, tree3)
+            self.assertFalse(tree1 is tree3)
             self.assertNotEqual(tree2, tree3)
+            self.assertFalse(tree2 is tree3)
         with self.subTest(f"test tree is different from other classes"):
             self.assertNotEqual(tree1, int(9))
 
@@ -563,23 +584,6 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(4, entry)
 
     def test_search_complex_data_type(self):
-        @functools.total_ordering
-        class Entry:
-            def __init__(self, a: int, b: str):
-                self.a = a
-                self.b = b
-
-            def __lt__(self, other):
-                if self.a == other.a:
-                    return self.b < other.b
-                return self.a < other.a
-
-            def __eq__(self, other):
-                return self.a == other.a and self.b == other.b
-
-            def __repr__(self):
-                return f"{self.__class__.__name__}({self.a}, {self.b})"
-
         tree = AVLTree([Entry(1, 'a'),
                         Entry(2, 'b'),
                         Entry(3, 'c'),
@@ -587,6 +591,14 @@ class AvlTreeTest(unittest.TestCase):
         entry = tree.search(Entry(3, 'd'))
 
         self.assertEqual(Entry(3, 'd'), entry)
+
+    def test_copy(self):
+        import copy
+        tree1 = AVLTree([1, 2, 3, 4, 5])
+        tree2 = copy.copy(tree1)
+
+        with self.subTest(f"test equal trees"):
+            self.assertEqual(tree1, tree2)
 
 
 def get_random_entries():
