@@ -54,6 +54,7 @@ class AvlTreeTest(unittest.TestCase):
         tree.insert(9)
 
         self.assertEqual(tree.root.entry, 9)
+        self.assertFalse(tree.root.parent)
         self.assertEqual(tree.root.left.balance_factor, 0)
         self.assertEqual(tree.root.right.balance_factor, 0)
         self.assertTrue(tree)
@@ -68,6 +69,7 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(tree.root.right.entry, 10)
         self.assertEqual(tree.height, 2)
         self.assertTrue(tree)
+        self.assertTrue(tree.root.right.parent, 9)
 
     def test_smaller_entry_on_the_left_of_root(self):
         tree = AVLTree()
@@ -158,11 +160,16 @@ class AvlTreeTest(unittest.TestCase):
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
         self.assertEqual(root.height, 1)
+        self.assertFalse(root.parent)
+        self.assertEqual(root.entry, 1)
 
         tree.insert(2)
         root = tree.root
         self.assertEqual(root.balance_factor, -1)
         self.assertEqual(root.height, 2)
+        self.assertEqual(root.right.parent, root)
+        self.assertEqual(root.entry, 1)
+        self.assertEqual(root.right.entry, 2)
 
         tree.insert(3)
         root = tree.root
@@ -170,6 +177,13 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.left.balance_factor, 0)
         self.assertEqual(root.right.balance_factor, 0)
         self.assertEqual(root.height, 2)
+
+        self.assertFalse(root.parent)
+        self.assertEqual(root.entry, 2)
+        self.assertEqual(root.left.entry, 1)
+        self.assertEqual(root.right.entry, 3)
+        self.assertEqual(root.right.parent, root)
+        self.assertEqual(root.left.parent, root)
 
     def test_single_right_rotation(self):
         tree = AVLTree()
@@ -177,11 +191,16 @@ class AvlTreeTest(unittest.TestCase):
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
         self.assertEqual(root.height, 1)
+        self.assertFalse(root.parent)
+        self.assertEqual(root.entry, 3)
 
         tree.insert(2)
         root = tree.root
         self.assertEqual(root.balance_factor, 1)
         self.assertEqual(root.height, 2)
+        self.assertEqual(root.left.parent, root)
+        self.assertEqual(root.entry, 3)
+        self.assertEqual(root.left.entry, 2)
 
         tree.insert(1)
         root = tree.root
@@ -189,6 +208,13 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.left.balance_factor, 0)
         self.assertEqual(root.right.balance_factor, 0)
         self.assertEqual(root.height, 2)
+
+        self.assertFalse(root.parent)
+        self.assertEqual(root.entry, 2)
+        self.assertEqual(root.left.entry, 1)
+        self.assertEqual(root.right.entry, 3)
+        self.assertEqual(root.right.parent, root)
+        self.assertEqual(root.left.parent, root)
 
     def test_left_right_rotation(self):
         tree = AVLTree()
@@ -605,26 +631,24 @@ class AvlTreeTest(unittest.TestCase):
         random.seed(901)
         entries = get_random_entries()
         tree = AVLTree(entries)
-        lower = min(entries)
-        upper = max(entries)
-        entry = random.choice(range(lower + 1, upper))
+        entries = sorted(entries)
 
         with self.subTest(f"test pred found"):
-            actual_pred = tree.pred(entry)
-            expected_pred = entry - 1
-            self.assertEqual(expected_pred, actual_pred)
+            for entry in entries[3:-1]:
+                actual_pred = tree.pred(entry)
+                expected_pred = entry - 1
+                self.assertEqual(expected_pred, actual_pred)
 
         with self.assertRaises(KeyError) as context:
             tree.pred(1000000)
         self.assertIn("Predecessor of 1000000 not found.", str(context.exception))
 
 
-
 def get_random_entries():
     from random import randint, shuffle, seed
     seed(901)
-    a = randint(1, 500)
-    b = randint(1, 500)
+    a = randint(1, 205)
+    b = randint(1, 205)
     lower, upper = min(a, b), max(a, b)
     entries = list(range(lower, upper + 1))
     shuffle(entries)

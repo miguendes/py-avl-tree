@@ -29,11 +29,11 @@ class _EmptyAVLNode:
     def __init__(self):
         self.height = 0
 
-    def insert(self, entry):
+    def insert(self, parent, entry):
         """Inserting a entry in a EmptyNode means returning a concrete node back."""
-        return _AVLNode(entry)
+        return _AVLNode(parent, entry)
 
-    def delete(self, entry):
+    def delete(self, parent, entry):
         """Cannot delete a entry from a EmptyNode"""
         raise KeyError(entry)
 
@@ -61,28 +61,29 @@ EMPTY_NODE = _EmptyAVLNode()
 class _AVLNode:
     """Internal object, represents a tree node."""
 
-    def __init__(self, entry=None):
+    def __init__(self, parent=None, entry=None):
         """Creates a new node."""
         self.entry = entry
         self.left = EMPTY_NODE
         self.right = EMPTY_NODE
+        self.parent = parent if parent is not None else EMPTY_NODE
         self.height = 1
 
-    def insert(self, entry):
+    def insert(self, parent, entry):
         """Inserts a entry to the subtree."""
         if entry > self.entry:
-            self.right = self.right.insert(entry)
+            self.right = self.right.insert(self, entry)
         elif entry < self.entry:
-            self.left = self.left.insert(entry)
+            self.left = self.left.insert(self, entry)
 
         return self._balanced_tree()
 
-    def delete(self, entry):
+    def delete(self, parent, entry):
         """Deletes a entry from subtree and return it balanced."""
         if entry > self.entry:
-            self.right = self.right.delete(entry)
+            self.right = self.right.delete(self, entry)
         elif entry < self.entry:
-            self.left = self.left.delete(entry)
+            self.left = self.left.delete(self, entry)
         else:
             if self.is_leaf():
                 return EMPTY_NODE
@@ -90,11 +91,11 @@ class _AVLNode:
             if self.left:
                 new_entry = self.left.max()
                 self.entry = new_entry
-                self.left = self.left.delete(new_entry)
+                self.left = self.left.delete(self, new_entry)
             else:
                 new_entry = self.right.entry
                 self.entry = new_entry
-                self.right = self.right.delete(new_entry)
+                self.right = self.right.delete(self, new_entry)
 
         return self._balanced_tree()
 
@@ -146,7 +147,9 @@ class _AVLNode:
 
     def __eq__(self, other):
         """Checks if two nodes are equal."""
-        return self.entry == other.entry and self.left == other.left and self.right == other.right
+        if isinstance(other, self.__class__):
+            return self.entry == other.entry and self.left == other.left and self.right == other.right
+        return False
 
     def _balanced_tree(self):
         """Returns balanced tree after balance operation."""
@@ -173,8 +176,11 @@ class _AVLNode:
     def _rotate_left(self):
         """Performs a left rotation."""
         right_tree = self.right
+        old_parent = self.parent
         self.right = right_tree.left
+        self.parent = right_tree
         right_tree.left = self
+        right_tree.parent = old_parent
 
         self._update_height()
         right_tree._update_height()
@@ -184,8 +190,11 @@ class _AVLNode:
     def _rotate_right(self):
         """Performs a right rotation."""
         left_tree = self.left
+        old_parent = self.parent
         self.left = left_tree.right
+        self.parent = left_tree
         left_tree.right = self
+        left_tree.parent = old_parent
 
         self._update_height()
         left_tree._update_height()
@@ -235,11 +244,11 @@ class AVLTree:
 
     def insert(self, entry):
         """T.insert(entry) -- insert elem"""
-        self.root = self.root.insert(entry)
+        self.root = self.root.insert(self.root, entry)
 
     def delete(self, entry):
         """T.remove(entry) remove item <entry> from tree."""
-        self.root = self.root.delete(entry)
+        self.root = self.root.delete(self.root, entry)
 
     def traverse(self, order='inorder'):
         """Traverse the tree based on a given strategy.
@@ -291,6 +300,17 @@ class AVLTree:
 
             if node.left:
                 return node.left.max()
+            else:
+                parent = node.parent
+                y = parent
+                x = node
+
+                while y and x == y.left:
+                    x = y
+                    y = y.parent
+                if y:
+                    return y.entry
+                raise KeyError(f'Predecessor of {entry} not found.')
         except KeyError:
             raise KeyError(f'Predecessor of {entry} not found.')
 
@@ -344,7 +364,6 @@ class AVLTree:
         result = cls.__new__(cls)
         result.__dict__.update(self.__dict__)
         return result
-
 
     def _init_tree(self, args):
         """Initialize the tree according to the arguments passed. """
