@@ -21,6 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections import deque
+from copy import deepcopy
 
 
 class _EmptyAVLNode:
@@ -336,6 +337,13 @@ class AVLTree:
         result.__dict__.update(self.__dict__)
         return result
 
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
 
     def _init_tree(self, args):
         """Initialize the tree according to the arguments passed. """
