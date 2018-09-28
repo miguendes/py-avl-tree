@@ -295,24 +295,22 @@ class AVLTree:
         raise KeyError(f'Entry {entry} not found.')
 
     def pred(self, entry):
-        try:
-            node = self._search(entry)
-
-            if node.left:
-                return node.left.max()
+        node = self.root
+        pred = EMPTY_NODE
+        while node:
+            if entry < node.entry:
+                node = node.left
+            elif entry > node.entry:
+                pred = node
+                node = node.right
             else:
-                parent = node.parent
-                y = parent
-                x = node
-
-                while y and x == y.left:
-                    x = y
-                    y = y.parent
-                if y:
-                    return y.entry
-                raise KeyError(f'Predecessor of {entry} not found.')
-        except KeyError:
+                if node.left:
+                    return node.left.max()
+                break
+        if not node:
             raise KeyError(f'Predecessor of {entry} not found.')
+        if pred:
+            return pred.entry
 
     def __len__(self):
         """T.__len__() <==> len(x). Retuns the number of elements in the tree."""

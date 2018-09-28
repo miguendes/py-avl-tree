@@ -628,13 +628,13 @@ class AvlTreeTest(unittest.TestCase):
 
     def test_pred(self):
         import random
-        random.seed(901)
+        # random.seed(901)
         entries = get_random_entries()
         tree = AVLTree(entries)
         entries = sorted(entries)
 
         with self.subTest(f"test pred found"):
-            for entry in entries[3:-1]:
+            for entry in entries[1:-1]:
                 actual_pred = tree.pred(entry)
                 expected_pred = entry - 1
                 self.assertEqual(expected_pred, actual_pred)
@@ -646,7 +646,7 @@ class AvlTreeTest(unittest.TestCase):
 
 def get_random_entries():
     from random import randint, shuffle, seed
-    seed(901)
+    # seed(901)
     a = randint(1, 205)
     b = randint(1, 205)
     lower, upper = min(a, b), max(a, b)
