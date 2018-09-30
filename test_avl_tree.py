@@ -585,6 +585,8 @@ class AvlTreeTest(unittest.TestCase):
             self.assertFalse(tree2 is tree3)
         with self.subTest(f"test tree is different from other classes"):
             self.assertNotEqual(tree1, int(9))
+        with self.subTest(f"test tree is different from empty tree"):
+            self.assertNotEqual(tree1, AVLTree())
 
     def test_clear(self):
         tree = AVLTree([1, 2, 3, 4, 5])
@@ -612,6 +614,11 @@ class AvlTreeTest(unittest.TestCase):
         entry = tree.search(Entry(3, 'd'))
 
         self.assertEqual(Entry(3, 'd'), entry)
+
+        entry = Entry(3113, 'd')
+        with self.assertRaises(KeyError) as context:
+            tree.search(entry)
+        self.assertIn(f"Entry {entry} not found.", str(context.exception))
 
     def test_copy(self):
         import copy
