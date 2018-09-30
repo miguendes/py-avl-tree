@@ -21,6 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections import deque
+from typing import Iterable, Any
 
 
 class _EmptyAVLNode:
@@ -41,6 +42,9 @@ class _EmptyAVLNode:
     def balance_factor(self):
         """The balance factor of a empty node is always 0."""
         return 0
+
+    def pred(self, pred, entry):
+        raise KeyError(f'Predecessor of {entry} not found.')
 
     def __bool__(self):
         """Empty node is always Falsy. """
@@ -64,9 +68,9 @@ class _AVLNode:
     def __init__(self, entry=None):
         """Creates a new node."""
         self.entry = entry
-        self.left = EMPTY_NODE
-        self.right = EMPTY_NODE
-        self.height = 1
+        self.left: '_AVLNode' = EMPTY_NODE
+        self.right: '_AVLNode' = EMPTY_NODE
+        self.height: int = 1
 
     def insert(self, entry):
         """Inserts a entry to the subtree."""
@@ -206,6 +210,19 @@ class _AVLNode:
         self.right = self.right._rotate_right()
         return self._rotate_left()
 
+    def pred(self, pred: '_AVLNode', entry):
+        if entry > self.entry:
+            return self.right.pred(self, entry)
+        elif entry < self.entry:
+            return self.left.pred(pred, entry)
+        else:
+            if self.left:
+                return self.left.max()
+            if pred:
+                return pred.entry
+
+            raise KeyError(f'Predecessor of {entry} not found.')
+
 
 class AVLTree:
     """
@@ -232,9 +249,9 @@ class AVLTree:
 
     """
 
-    def __init__(self, args=None):
+    def __init__(self, args: Iterable[Any] = None):
         """Initialize an AVL Tree. """
-        self.root = None
+        self.root: _AVLNode = None
         self._init_tree(args)
 
     def insert(self, entry):
@@ -290,22 +307,7 @@ class AVLTree:
         raise KeyError(f'Entry {entry} not found.')
 
     def pred(self, entry):
-        node = self.root
-        pred = EMPTY_NODE
-        while node:
-            if entry < node.entry:
-                node = node.left
-            elif entry > node.entry:
-                pred = node
-                node = node.right
-            else:
-                if node.left:
-                    return node.left.max()
-                break
-        if not node:
-            raise KeyError(f'Predecessor of {entry} not found.')
-        if pred:
-            return pred.entry
+        return self.root.pred(EMPTY_NODE, entry)
 
     def __len__(self):
         """T.__len__() <==> len(x). Retuns the number of elements in the tree."""
