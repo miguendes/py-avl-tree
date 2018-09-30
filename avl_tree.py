@@ -21,6 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections import deque
+from typing import Iterable, Any
 from copy import deepcopy
 
 
@@ -42,6 +43,9 @@ class _EmptyAVLNode:
     def balance_factor(self):
         """The balance factor of a empty node is always 0."""
         return 0
+
+    def pred(self, pred, entry):
+        raise KeyError(f'Predecessor of {entry} not found.')
 
     def __bool__(self):
         """Empty node is always Falsy. """
@@ -65,9 +69,9 @@ class _AVLNode:
     def __init__(self, entry=None):
         """Creates a new node."""
         self.entry = entry
-        self.left = EMPTY_NODE
-        self.right = EMPTY_NODE
-        self.height = 1
+        self.left: '_AVLNode' = EMPTY_NODE
+        self.right: '_AVLNode' = EMPTY_NODE
+        self.height: int = 1
 
     def insert(self, entry):
         """Inserts a entry to the subtree."""
@@ -147,7 +151,9 @@ class _AVLNode:
 
     def __eq__(self, other):
         """Checks if two nodes are equal."""
-        return self.entry == other.entry and self.left == other.left and self.right == other.right
+        if isinstance(other, self.__class__):
+            return self.entry == other.entry and self.left == other.left and self.right == other.right
+        return False
 
     def _balanced_tree(self):
         """Returns balanced tree after balance operation."""
@@ -203,6 +209,19 @@ class _AVLNode:
         self.right = self.right._rotate_right()
         return self._rotate_left()
 
+    def pred(self, pred: '_AVLNode', entry):
+        if entry > self.entry:
+            return self.right.pred(self, entry)
+        elif entry < self.entry:
+            return self.left.pred(pred, entry)
+        else:
+            if self.left:
+                return self.left.max()
+            if pred:
+                return pred.entry
+
+            raise KeyError(f'Predecessor of {entry} not found.')
+
 
 class AVLTree:
     """
@@ -229,9 +248,9 @@ class AVLTree:
 
     """
 
-    def __init__(self, args=None):
+    def __init__(self, args: Iterable[Any] = None):
         """Initialize an AVL Tree. """
-        self.root = None
+        self.root: _AVLNode = None
         self._init_tree(args)
 
     def insert(self, entry):
@@ -285,6 +304,9 @@ class AVLTree:
                 return root
 
         raise KeyError(f'Entry {entry} not found.')
+
+    def pred(self, entry):
+        return self.root.pred(EMPTY_NODE, entry)
 
     def __len__(self):
         """T.__len__() <==> len(x). Retuns the number of elements in the tree."""

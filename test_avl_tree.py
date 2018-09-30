@@ -637,13 +637,35 @@ class AvlTreeTest(unittest.TestCase):
         single_entry.b = 'a'
         self.assertNotEqual(tree1, tree2)
 
+    def test_pred(self):
+        import random
+        random.seed(7477)
+        entries = get_random_entries()
+        tree = AVLTree(entries)
+
+        with self.subTest(f"test pred found"):
+            pred, prev = None, None
+            for entry in tree.traverse():
+                try:
+                    pred = tree.pred(entry)
+                except KeyError:
+                    self.assertIsNone(prev)
+                self.assertEqual(prev, pred)
+                prev = entry
+
+        with self.assertRaises(KeyError) as context:
+            tree.pred(1000000)
+        self.assertIn("Predecessor of 1000000 not found.", str(context.exception))
+
 
 def get_random_entries():
-    from random import randint
+    from random import randint, shuffle, seed
+    seed(7477)
     a = randint(1, 500)
     b = randint(1, 500)
     lower, upper = min(a, b), max(a, b)
-    entries = range(lower, upper + 1)
+    entries = list(range(lower, upper + 1))
+    shuffle(entries)
     return entries
 
 
