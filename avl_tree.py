@@ -22,6 +22,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections import deque
 from typing import Iterable, Any
+from copy import deepcopy
 
 
 class _EmptyAVLNode:
@@ -190,9 +191,7 @@ class _AVLNode:
     def _rotate_right(self):
         """Performs a right rotation."""
         left_tree = self.left
-
         self.left = left_tree.right
-
         left_tree.right = self
 
         self._update_height()
@@ -358,6 +357,14 @@ class AVLTree:
         cls = self.__class__
         result = cls.__new__(cls)
         result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
         return result
 
     def _init_tree(self, args):

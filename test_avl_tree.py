@@ -210,11 +210,14 @@ class AvlTreeTest(unittest.TestCase):
         root = tree.root
         self.assertEqual(root.balance_factor, 0)
         self.assertEqual(root.height, 1)
+        self.assertEqual(root.entry, 3)
 
         tree.insert(1)
         root = tree.root
         self.assertEqual(root.balance_factor, 1)
         self.assertEqual(root.height, 2)
+        self.assertEqual(root.entry, 3)
+        self.assertEqual(root.left.entry, 1)
 
         tree.insert(2)
         root = tree.root
@@ -222,6 +225,10 @@ class AvlTreeTest(unittest.TestCase):
         self.assertEqual(root.left.balance_factor, 0)
         self.assertEqual(root.right.balance_factor, 0)
         self.assertEqual(root.height, 2)
+
+        self.assertEqual(root.entry, 2)
+        self.assertEqual(root.left.entry, 1)
+        self.assertEqual(root.right.entry, 3)
 
     def test_right_left_rotation(self):
         tree = AVLTree()
@@ -608,11 +615,27 @@ class AvlTreeTest(unittest.TestCase):
 
     def test_copy(self):
         import copy
-        tree1 = AVLTree([1, 2, 3, 4, 5])
+        single_entry = Entry(1, ['a'])
+        tree1 = AVLTree([single_entry,
+                         Entry(2, 'b'),
+                         Entry(3, 'c'),
+                         Entry(3, 'd'), ])
         tree2 = copy.copy(tree1)
+        self.assertEqual(tree1, tree2)
+        single_entry.b = 'a'
+        self.assertEqual(tree1, tree2)
 
-        with self.subTest(f"test equal trees"):
-            self.assertEqual(tree1, tree2)
+    def test_deepcopy(self):
+        import copy
+        single_entry = Entry(1, ['a'])
+        tree1 = AVLTree([single_entry,
+                         Entry(2, 'b'),
+                         Entry(3, 'c'),
+                         Entry(3, 'd'), ])
+        tree2 = copy.deepcopy(tree1)
+        self.assertEqual(tree1, tree2)
+        single_entry.b = 'a'
+        self.assertNotEqual(tree1, tree2)
 
     def test_pred(self):
         import random
