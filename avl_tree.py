@@ -21,8 +21,8 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections import deque
-from typing import Iterable, Any
 from copy import deepcopy
+from typing import Iterable, Any
 
 
 class _EmptyAVLNode:
@@ -151,10 +151,8 @@ class _AVLNode:
 
     def __eq__(self, other):
         """Checks if two nodes are equal."""
-        if isinstance(other, self.__class__):
-            return self.entry == other.entry and self.left == other.left and self.right == other.right
-        return False
-
+        return self.entry == other.entry and self.left == other.left and self.right == other.right
+        
     def _balanced_tree(self):
         """Returns balanced tree after balance operation."""
         self._update_height()
