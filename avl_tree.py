@@ -20,9 +20,24 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from abc import ABCMeta, abstractmethod
 from collections import deque
 from copy import deepcopy
-from typing import Iterable, Any, Union
+from typing import Iterable, Any, Union, TypeVar, Generator
+
+
+class Comparable(metaclass=ABCMeta):
+    @abstractmethod
+    def __lt__(self, other: Any) -> bool: pass
+
+    @abstractmethod
+    def __gt__(self, other: Any) -> bool: pass
+
+    @abstractmethod
+    def __eq__(self, other: Any) -> bool: pass
+
+
+Entry = TypeVar('Entry', bound=Comparable)
 
 
 class _EmptyAVLNode:
@@ -31,11 +46,11 @@ class _EmptyAVLNode:
     def __init__(self):
         self.height = 0
 
-    def insert(self, entry):
+    def insert(self, entry: Entry):
         """Inserting a entry in a EmptyNode means returning a concrete node back."""
         return _AVLNode(entry)
 
-    def delete(self, entry):
+    def delete(self, entry: Entry):
         """Cannot delete a entry from a EmptyNode"""
         raise KeyError(entry)
 
@@ -44,7 +59,7 @@ class _EmptyAVLNode:
         """The balance factor of a empty node is always 0."""
         return 0
 
-    def pred(self, pred, entry):
+    def pred(self, pred: Union['_AVLNode', '_EmptyAVLNode'], entry: Entry):
         raise KeyError(f'Predecessor of {entry} not found.')
 
     def succ(self, pred, entry):
@@ -69,14 +84,14 @@ EMPTY_NODE = _EmptyAVLNode()
 class _AVLNode:
     """Internal object, represents a tree node."""
 
-    def __init__(self, entry=None):
+    def __init__(self, entry: Entry = None):
         """Creates a new node."""
-        self.entry = entry
+        self.entry: Entry = entry
         self.left: '_AVLNode' = EMPTY_NODE
         self.right: '_AVLNode' = EMPTY_NODE
         self.height: int = 1
 
-    def insert(self, entry):
+    def insert(self, entry: Entry):
         """Inserts a entry to the subtree."""
         if entry > self.entry:
             self.right = self.right.insert(entry)
@@ -85,7 +100,7 @@ class _AVLNode:
 
         return self._balanced_tree()
 
-    def delete(self, entry):
+    def delete(self, entry: Entry) -> Union['_AVLNode', _EmptyAVLNode]:
         """Deletes a entry from subtree and return it balanced."""
         if entry > self.entry:
             self.right = self.right.delete(entry)
@@ -106,7 +121,7 @@ class _AVLNode:
 
         return self._balanced_tree()
 
-    def clear(self):
+    def clear(self) -> _EmptyAVLNode:
         """Clears the whole subtree"""
         if self.is_leaf():
             return EMPTY_NODE
@@ -115,11 +130,11 @@ class _AVLNode:
 
         return EMPTY_NODE
 
-    def is_leaf(self):
+    def is_leaf(self) -> bool:
         """Checks if the node is a leaf node, i. e, if its siblings are empty."""
         return not (bool(self.left) or bool(self.right))
 
-    def max(self):
+    def max(self) -> Entry:
         """Returns the max element in the subtree."""
         max_entry = self.entry
         right_node = self.right
@@ -129,7 +144,7 @@ class _AVLNode:
 
         return max_entry
 
-    def min(self):
+    def min(self) -> Entry:
         """Returns the min element in the subtree."""
         min_entry = self.entry
         left_node = self.left
@@ -140,32 +155,32 @@ class _AVLNode:
         return min_entry
 
     @property
-    def balance_factor(self):
+    def balance_factor(self) -> int:
         """Returns the balance factor of the node."""
         return self.left.height - self.right.height
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """Returns True if the node is not None"""
         return self.entry is not None
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of elements in this subtree."""
         return 1 + len(self.left) + len(self.right)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Checks if two nodes are equal."""
         return self.entry == other.entry and self.left == other.left and self.right == other.right
 
-    def _balanced_tree(self):
+    def _balanced_tree(self) -> '_AVLNode':
         """Returns balanced tree after balance operation."""
         self._update_height()
         return self._balance_tree_if_unbalanced()
 
-    def _update_height(self):
+    def _update_height(self) -> None:
         """Updated the height if tree has been rebalanced."""
         self.height = 1 + max(self.left.height, self.right.height)
 
-    def _balance_tree_if_unbalanced(self):
+    def _balance_tree_if_unbalanced(self) -> '_AVLNode':
         """Performs the appropriate rotation if the the subtree is unbalanced."""
         if self.balance_factor == 2 and self.left.balance_factor == -1:
             return self._rotate_left_right()
@@ -178,7 +193,7 @@ class _AVLNode:
         else:
             return self
 
-    def _rotate_left(self):
+    def _rotate_left(self) -> '_AVLNode':
         """Performs a left rotation."""
         right_tree = self.right
         self.right = right_tree.left
@@ -189,7 +204,7 @@ class _AVLNode:
 
         return right_tree
 
-    def _rotate_right(self):
+    def _rotate_right(self) -> '_AVLNode':
         """Performs a right rotation."""
         left_tree = self.left
         self.left = left_tree.right
@@ -200,17 +215,17 @@ class _AVLNode:
 
         return left_tree
 
-    def _rotate_left_right(self):
+    def _rotate_left_right(self) -> '_AVLNode':
         """Performs a LR rotation"""
         self.left = self.left._rotate_left()
         return self._rotate_right()
 
-    def _rotate_right_left(self):
+    def _rotate_right_left(self) -> '_AVLNode':
         """Performs a RL rotation"""
         self.right = self.right._rotate_right()
         return self._rotate_left()
 
-    def pred(self, pred: Union['_AVLNode', _EmptyAVLNode], entry):
+    def pred(self, pred: Union['_AVLNode', _EmptyAVLNode], entry) -> Entry:
         if entry > self.entry:
             return self.right.pred(self, entry)
         elif entry < self.entry:
@@ -223,7 +238,7 @@ class _AVLNode:
 
             raise KeyError(f'Predecessor of {entry} not found.')
 
-    def succ(self, succ: Union['_AVLNode', _EmptyAVLNode], entry):
+    def succ(self, succ: Union['_AVLNode', _EmptyAVLNode], entry) -> Entry:
         if entry > self.entry:
             return self.right.succ(succ, entry)
         elif entry < self.entry:
@@ -267,15 +282,15 @@ class AVLTree:
         self.root: _AVLNode = None
         self._init_tree(args)
 
-    def insert(self, entry):
+    def insert(self, entry: Entry) -> None:
         """T.insert(entry) -- insert elem"""
         self.root = self.root.insert(entry)
 
-    def delete(self, entry):
+    def delete(self, entry: Entry) -> None:
         """T.remove(entry) remove item <entry> from tree."""
         self.root = self.root.delete(entry)
 
-    def traverse(self, order='inorder'):
+    def traverse(self, order='inorder') -> Generator[Entry, None, None]:
         """Traverse the tree based on a given strategy.
 
         order : 'preorder' | 'postorder' | 'bfs' | default 'inorder'
@@ -297,15 +312,15 @@ class AVLTree:
             return self._inorder(self.root)
 
     @property
-    def height(self):
+    def height(self) -> int:
         """Returns the height of the tree. When the tree is empty its height is zero."""
         return self.root.height
 
-    def search(self, entry):
+    def search(self, entry: Entry) -> Entry:
         """Returns k if T has a entry k, else raise KeyError"""
         return self._search(entry).entry
 
-    def _search(self, entry) -> _AVLNode:
+    def _search(self, entry: Entry) -> _AVLNode:
         """Returns node.k if T has a entry k, else raise KeyError"""
         root = self.root
 
@@ -319,17 +334,17 @@ class AVLTree:
 
         raise KeyError(f'Entry {entry} not found.')
 
-    def pred(self, entry):
+    def pred(self, entry: Entry) -> Entry:
         return self.root.pred(EMPTY_NODE, entry)
 
-    def succ(self, entry):
+    def succ(self, entry: Entry) -> Entry:
         return self.root.succ(EMPTY_NODE, entry)
 
-    def __len__(self):
+    def __len__(self) -> int:
         """T.__len__() <==> len(x). Retuns the number of elements in the tree."""
         return len(self.root)
 
-    def __contains__(self, entry):
+    def __contains__(self, entry) -> bool:
         """k in T -> True if T has a entry k, else False"""
         try:
             self.search(entry)
@@ -337,46 +352,46 @@ class AVLTree:
         except KeyError:
             return False
 
-    def max(self):
+    def max(self) -> Entry:
         """T.max() -> get the maximum entry of T."""
         return self.root.max()
 
-    def min(self):
+    def min(self) -> Entry:
         """T.min() -> get the minimum entry of T."""
         return self.root.min()
 
-    def clear(self):
+    def clear(self) -> None:
         """T.clear() -> Removes all entries of T leaving it empty."""
         self.root = self.root.clear()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """T.__repr__(...) <==> repr(x).
         Returns representation of the object that can be used to recreate the tree with the same values."""
         return f'{self.__class__.__name__}({list(self._bfs())})'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """T.__str__(...) <==> str(x)."""
         return repr(self)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Checks if two trees are equal. """
         if isinstance(other, self.__class__):
             if self.height == other.height and len(self) == len(other):
                 return self.root == other.root
         return False
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """Returns True if the tree is not empty"""
         return bool(self.root)
 
-    def __copy__(self):
+    def __copy__(self) -> 'AVLTree':
         """Returns a shallow copy of the tree."""
         cls = self.__class__
         result = cls.__new__(cls)
         result.__dict__.update(self.__dict__)
         return result
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo) -> 'AVLTree':
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
@@ -384,7 +399,7 @@ class AVLTree:
             setattr(result, k, deepcopy(v, memo))
         return result
 
-    def _init_tree(self, args):
+    def _init_tree(self, args) -> None:
         """Initialize the tree according to the arguments passed. """
         self.root = EMPTY_NODE
 
@@ -399,28 +414,28 @@ class AVLTree:
                 raise TypeError('AVLTree constructor called with '
                                 f'incompatible data type: {e}')
 
-    def _inorder(self, root):
+    def _inorder(self, root) -> Generator[Entry, None, None]:
         """Performs an in-order traversal. """
         if root:
             yield from self._inorder(root.left)
             yield root.entry
             yield from self._inorder(root.right)
 
-    def _preorder(self, root):
+    def _preorder(self, root) -> Generator[Entry, None, None]:
         """Performs an pre-order traversal."""
         if root:
             yield root.entry
             yield from self._preorder(root.left)
             yield from self._preorder(root.right)
 
-    def _postorder(self, root):
+    def _postorder(self, root) -> Generator[Entry, None, None]:
         """Performs an post-order traversal."""
         if root:
             yield from self._postorder(root.left)
             yield from self._postorder(root.right)
             yield root.entry
 
-    def _bfs(self):
+    def _bfs(self) -> Generator[Entry, None, None]:
         """Performs an Breadth first traversal."""
         root = self.root
 
