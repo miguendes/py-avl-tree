@@ -22,7 +22,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections import deque
 from copy import deepcopy
-from typing import Iterable, Any
+from typing import Iterable, Any, Union
 
 
 class _EmptyAVLNode:
@@ -46,6 +46,9 @@ class _EmptyAVLNode:
 
     def pred(self, pred, entry):
         raise KeyError(f'Predecessor of {entry} not found.')
+
+    def succ(self, pred, entry):
+        raise KeyError(f'Successor of {entry} not found.')
 
     def __bool__(self):
         """Empty node is always Falsy. """
@@ -152,7 +155,7 @@ class _AVLNode:
     def __eq__(self, other):
         """Checks if two nodes are equal."""
         return self.entry == other.entry and self.left == other.left and self.right == other.right
-        
+
     def _balanced_tree(self):
         """Returns balanced tree after balance operation."""
         self._update_height()
@@ -207,7 +210,7 @@ class _AVLNode:
         self.right = self.right._rotate_right()
         return self._rotate_left()
 
-    def pred(self, pred: '_AVLNode', entry):
+    def pred(self, pred: Union['_AVLNode', _EmptyAVLNode], entry):
         if entry > self.entry:
             return self.right.pred(self, entry)
         elif entry < self.entry:
@@ -219,6 +222,19 @@ class _AVLNode:
                 return pred.entry
 
             raise KeyError(f'Predecessor of {entry} not found.')
+
+    def succ(self, succ: Union['_AVLNode', _EmptyAVLNode], entry):
+        if entry > self.entry:
+            return self.right.succ(succ, entry)
+        elif entry < self.entry:
+            return self.left.succ(self, entry)
+        else:
+            if self.right:
+                return self.right.min()
+            if succ:
+                return succ.entry
+
+            raise KeyError(f'Successor of {entry} not found.')
 
 
 class AVLTree:
@@ -305,6 +321,9 @@ class AVLTree:
 
     def pred(self, entry):
         return self.root.pred(EMPTY_NODE, entry)
+
+    def succ(self, entry):
+        return self.root.succ(EMPTY_NODE, entry)
 
     def __len__(self):
         """T.__len__() <==> len(x). Retuns the number of elements in the tree."""

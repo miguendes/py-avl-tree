@@ -664,6 +664,27 @@ class AvlTreeTest(unittest.TestCase):
             tree.pred(1000000)
         self.assertIn("Predecessor of 1000000 not found.", str(context.exception))
 
+    def test_succ(self):
+        import random
+        random.seed(7477)
+        entries = get_random_entries()
+        tree = AVLTree(entries)
+        rev_entries = sorted(entries, reverse=True)
+
+        with self.subTest(f"test succ found"):
+            succ, prev = None, None
+            for entry in rev_entries:
+                try:
+                    succ = tree.succ(entry)
+                except KeyError:
+                    self.assertIsNone(prev)
+                self.assertEqual(prev, succ)
+                prev = entry
+
+        with self.assertRaises(KeyError) as context:
+            tree.succ(1000000)
+        self.assertIn("Successor of 1000000 not found.", str(context.exception))
+
 
 def get_random_entries():
     from random import randint, shuffle, seed
