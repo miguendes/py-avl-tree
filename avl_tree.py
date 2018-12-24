@@ -115,9 +115,7 @@ class _AVLNode:
                 self.entry = new_entry
                 self.left = self.left.delete(new_entry)
             else:
-                new_entry = self.right.entry
-                self.entry = new_entry
-                self.right = self.right.delete(new_entry)
+                return self.right
 
         return self._balanced_tree()
 
