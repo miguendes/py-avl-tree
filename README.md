@@ -67,3 +67,5 @@ How to Contribute
     works as expected.
 4.  Send a pull request and bug the maintainer until it gets merged and
     published. :)
+
+https://miguendes.me
